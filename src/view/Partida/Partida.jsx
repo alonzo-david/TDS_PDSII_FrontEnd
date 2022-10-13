@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Pregunta from "../../components/Pregunta/Pregunta";
-import { Api, ApiPregunta } from "./../../services/Api";
+
 import "./Partida.css";
 
 const Partida = () => {
-  
+  useEffect(() => {
+    console.log("useEffect Partida");
+  }, []);
 
   return (
     <div>

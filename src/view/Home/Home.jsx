@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { withRouter, useHistory } from "react-router-dom";
-import Api from "./../../services/Api";
-import { Grid, Button } from "@mui/material/";
+// import { Grid, Button } from "@mui/material/";
 
 import "./Home.css";
 import Login from "../Login/Login";
@@ -14,6 +13,7 @@ const Home = (props) => {
   const history = useHistory();
 
   useEffect(() => {
+    console.log("useEffect Home");
     fetchData();
   }, []);
 

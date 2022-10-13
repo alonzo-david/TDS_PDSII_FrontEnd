@@ -3,10 +3,10 @@ import { Api, ApiPregunta } from "./../../services/Api";
 
 const Pregunta = () => {
   useEffect(() => {
-    pregunta();
+    getPregunta();
   }, []);
 
-  const pregunta = () => {
+  const getPregunta = () => {
     ApiPregunta.Get("/preguntas.php?grupo=6&nivel=1")
       .then((res) => {
         console.log("Result Auth: ", res);
