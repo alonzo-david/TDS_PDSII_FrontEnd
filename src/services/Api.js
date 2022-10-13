@@ -3,6 +3,7 @@ import * as env from "../config/environment/environment";
 const { API_URL, API_PREGUNTA } = env.production; //env.test //env[process.env.NODE_ENV]; //env.development;
 
 const URL_API = `${API_URL}`;
+const URL_API_PREGUNTA = `${API_PREGUNTA}`;
 
 const Api = {
   Get: async (endpoint, token) => {
@@ -60,7 +61,7 @@ const Api = {
 
 const ApiPregunta = {
   Get: async (endpoint) => {
-    const response = await axios.get(URL_API + endpoint, {
+    const response = await axios.get(URL_API_PREGUNTA + endpoint, {
       headers: {
         "Access-Control-Allow-Headers":
           "Origin, X-Requested-With, Content-Type, Accept",
