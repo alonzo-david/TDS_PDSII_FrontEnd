@@ -9,7 +9,7 @@ import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { withRouter } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 
 import { Api } from "./../../services/Api";
 import { useHistory } from "react-router-dom";
@@ -136,6 +136,14 @@ const Login = (props) => {
               >
                 Ingresar
               </Button>
+
+              <Grid container>
+                <Grid item>
+                  <Link to="/Registrar" variant="body2">
+                    {"¿No tienes una cuenta? Registrate."}
+                  </Link>
+                </Grid>
+              </Grid>
             </Box>
           </Box>
         </Grid>
