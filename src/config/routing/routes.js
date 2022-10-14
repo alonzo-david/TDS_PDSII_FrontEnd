@@ -20,6 +20,10 @@ const PUBLIC_ROUTES = [
     component: views.Partida,
     path: "/Partida",
   },
+  {
+    component: views.Registrar,
+    path: "/Registrar"
+  }
   /*{
     component: views.NotFound,
     path: "/404",
