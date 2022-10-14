@@ -1,19 +1,8 @@
 import React from 'react';
-/*import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';*/
 import { render } from "react-dom";
 import { BrowserRouter as Router } from "react-router-dom";
 import Main from "./App";
-import reportWebVitals from './reportWebVitals';
-
-/*ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);*/
-
+// import reportWebVitals from './reportWebVitals';
 
 const App = () => (
   <Router>
