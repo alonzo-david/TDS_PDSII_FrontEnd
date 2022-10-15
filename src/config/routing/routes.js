@@ -23,6 +23,14 @@ const PUBLIC_ROUTES = [
   {
     component: views.Registrar,
     path: "/Registrar"
+  },
+  {
+    component: views.Dashboard,
+    path: "/Dashboard"
+  },
+  {
+    component: views.Welcome,
+    path: "/Welcome"
   }
   /*{
     component: views.NotFound,
