@@ -9,7 +9,7 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { Drawer, ListItem, ListItemText } from "@mui/material";
+import { CssBaseline, Drawer, ListItem, ListItemText } from "@mui/material";
 import LinkButton from "../LinkButton/LinkButton";
 import { useHistory } from "react-router-dom";
 
@@ -126,6 +126,7 @@ const Header = () => {
           </AppBar>
         </ThemeProvider>
       </Box>
+      <CssBaseline />
     </>
   );
 };

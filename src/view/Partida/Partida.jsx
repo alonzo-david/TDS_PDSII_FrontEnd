@@ -3,14 +3,18 @@ import Pregunta from "../../components/Pregunta/Pregunta";
 
 import "./Partida.css";
 
+
+
 const Partida = () => {
   useEffect(() => {
     console.log("useEffect Partida");
   }, []);
 
+  
+
   return (
     <div>
-      <Pregunta></Pregunta>
+      <h1>Partida</h1>
     </div>
   );
 };
