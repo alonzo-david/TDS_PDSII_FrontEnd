@@ -9,9 +9,11 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { CssBaseline, Drawer, ListItem, ListItemText } from "@mui/material";
+import { Badge, CssBaseline, Drawer, ListItem, ListItemText } from "@mui/material";
 import LinkButton from "../LinkButton/LinkButton";
 import { useHistory } from "react-router-dom";
+import CastleIcon from '@mui/icons-material/Castle';
+import StarIcon from '@mui/icons-material/Star';
 
 const Header = () => {
   const [auth, setAuth] = useState(false);
@@ -40,6 +42,10 @@ const Header = () => {
     history.push("/");
   };
 
+  const ProfilePage = () => {
+    //history.push("/Perfil");
+  };
+
   const darkTheme = createTheme({
     palette: {
       mode: "dark",
@@ -48,6 +54,10 @@ const Header = () => {
       },
     },
   });
+
+  const headerButtons = {
+    color: "#FCA311",
+  };
 
   return (
     <>
@@ -78,16 +88,31 @@ const Header = () => {
                 sx={{ mr: 2 }}
                 onClick={handleOpenMenuBar}
               >
-                <MenuIcon />
+                <MenuIcon style={headerButtons} />
               </IconButton>
-              <Typography
-                variant="h6"
-                component="div"
-                sx={{ flexGrow: 1 }}
-                onClick={InitPage}
-              >
-                Trivia Guatemala
+              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} onClick={ProfilePage}>
+                Grupo 6
               </Typography>
+
+              <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} onClick={InitPage}>
+                  Trivia Guatemala
+                </Typography>
+              </Box>
+              <Box sx={{ flexGrow: 1 }} />
+              <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+                <IconButton size="small" aria-label="show 4 new mails" color="inherit">
+                  <StarIcon style={headerButtons} />
+                  Puntos 85
+                </IconButton>
+
+                <IconButton size="small" edge="end" color="inherit" >
+                  <CastleIcon style={headerButtons} />
+                  Nivel 5/10
+                </IconButton>
+              </Box>
+
+
               {auth ? (
                 <div>
                   <IconButton
