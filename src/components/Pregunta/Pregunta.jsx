@@ -1,15 +1,19 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
-  ButtonBase,
+  Card,
+  CardActionArea,
+  CardContent,
   Container,
   CssBaseline,
+  Grid,
   Typography,
 } from "@mui/material";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { styled } from "@mui/material/styles";
-
+import { preguntas } from "../../services/preguntas";
+import { ApiPregunta } from "../../services/Api";
 
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
@@ -19,96 +23,35 @@ const theme = createTheme({
   },
 });
 
-const images = [
-  {
-    url: "./img/q2.png",
-    title: "Breakfast",
-    width: "30%",
-  },
-  {
-    url: "./img/q2.png",
-    title: "Burgers",
-    width: "30%",
-  },
-  {
-    url: "./img/q2.png",
-    title: "Camera",
-    width: "30%",
-  },
-];
+const Pregunta = ({noPregunta, parentCallback}) => {
+  const [preguntas, setPreguntas] = useState([]);
+  const [numeroPregunta, setNumeroPregunta] = useState(noPregunta);
 
-const ImageButton = styled(ButtonBase)(({ theme }) => ({
-  position: "relative",
-  height: 200,
-  [theme.breakpoints.down("sm")]: {
-    width: "100% !important", // Overrides inline-style
-    height: 100,
-  },
-  "&:hover, &.Mui-focusVisible": {
-    zIndex: 1,
-    "& .MuiImageBackdrop-root": {
-      opacity: 0.15,
-    },
-    "& .MuiImageMarked-root": {
-      opacity: 0,
-    },
-    "& .MuiTypography-root": {
-      border: "4px solid currentColor",
-    },
-  },
-}));
+  useEffect(() => {
+    console.log("C Pregunta: ", noPregunta);
 
-const ImageSrc = styled("span")({
-  position: "absolute",
-  left: 0,
-  right: 0,
-  top: 0,
-  bottom: 0,
-  backgroundSize: "cover",
-  backgroundPosition: "center 40%",
-});
+    getPreguntas(noPregunta);
+  }, []);
 
-const Image = styled("span")(({ theme }) => ({
-  position: "absolute",
-  left: 0,
-  right: 0,
-  top: 0,
-  bottom: 0,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  color: theme.customColor.answer,
-}));
+  const getPreguntas = (_noPregunta) => {
+    ApiPregunta.Get("/preguntas.php?grupo=6&nivel=" + _noPregunta)
+      .then((res) => {
+        // console.log("Result Auth: ", res.data.json());
+        const result = Object.values(res.data);
+        console.log("Result Auth: ", result);
+        setPreguntas(result);
+      })
+      .catch((ex) => {
+        console.error("error", ex);
+      });
+  };
 
-const ImageBackdrop = styled("span")(({ theme }) => ({
-  position: "absolute",
-  left: 0,
-  right: 0,
-  top: 0,
-  bottom: 0,
-  backgroundColor: theme.palette.common.black,
-  opacity: 0.4,
-  transition: theme.transitions.create("opacity"),
-}));
+  const handleClickAswer = (e, _isCorrect) => {
+    e.stopPropagation();
+    console.log("CORRECT ANSWER: ", _isCorrect);
+    parentCallback(false, _isCorrect);
+  }
 
-const ImageMarked = styled("span")(({ theme }) => ({
-  height: 3,
-  width: 18,
-  backgroundColor: theme.palette.common.white,
-  position: "absolute",
-  bottom: -2,
-  left: "calc(50% - 9px)",
-  transition: theme.transitions.create("opacity"),
-}));
-
-
-
-
-
-
-
-const Pregunta = () => {
-  
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -129,7 +72,7 @@ const Pregunta = () => {
               color="text.primary"
               gutterBottom
             >
-              Album layout
+              Trivia Guatemala
             </Typography>
             <Typography
               variant="h5"
@@ -137,55 +80,35 @@ const Pregunta = () => {
               color="text.secondary"
               paragraph
             >
-              Something short and leading about the collection below—its
-              contents, the creator, etc. Make it short and sweet, but not too
-              short so folks don&apos;t simply skip over it entirely.
+              {preguntas[0]}
             </Typography>
-            <Container sx={{ py: 8 }} maxWidth="md">
-              <Box
-                sx={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  minWidth: 300,
-                  width: "100%",
-                }}
-              >
-                {images.map((image) => (
-                  <ImageButton
-                    focusRipple
-                    key={image.title}
-                    style={{
-                      width: image.width,
-                      marginRight: 15,
-                    }}
-                  >
-                    <ImageSrc
-                      style={{ backgroundImage: `url(${image.url})` }}
-                    />
-                    <ImageBackdrop className="MuiImageBackdrop-root" />
-                    <Image>
-                      <Typography
-                        component="span"
-                        variant="subtitle1"
-                        color="inherit"
-                        sx={{
-                          position: "relative",
-                          p: 4,
-                          pt: 2,
-                          pb: (theme) => `calc(${theme.spacing(1)} + 6px)`,
-                        }}
-                      >
-                        {image.title}
-                        <ImageMarked className="MuiImageMarked-root" />
-                      </Typography>
-                    </Image>
-                  </ImageButton>
-                ))}
-              </Box>
-            </Container>
+            <Grid container spacing={4}>
+              {preguntas.map((res, i) => {
+                if (i > 0) {
+                  return (
+                    <Grid item md={4} key={i} >
+                      <Card sx={{ maxWidth: 345 }} onClick={(e) => {handleClickAswer(e, res.is_correct)}}>
+                        <CardActionArea sx={{ height: 200 }}>
+                          <CardContent>
+                            <Typography
+                              gutterBottom
+                              variant="h5"
+                              component="div"
+                            >
+                              {res.text}
+                            </Typography>
+                          </CardContent>
+                        </CardActionArea>
+                      </Card>
+                    </Grid>
+                  );
+                }
+              })}
+
+            </Grid>
           </Container>
-        </Box>        
-      </main>      
+        </Box>
+      </main>
     </ThemeProvider>
   );
 };
