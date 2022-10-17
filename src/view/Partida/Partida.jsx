@@ -1,9 +1,7 @@
 import React, {
   useEffect,
   Fragment,
-  useCallback,
   useState,
-  useLayoutEffect,
 } from "react";
 import {
   Box,
@@ -21,7 +19,6 @@ import {
 import { Api, ApiPregunta } from "./../../services/Api";
 
 import "./Partida.css";
-import Pregunta from "../../components/Pregunta/Pregunta";
 
 const steps = [
   "Nivel 1",
@@ -41,12 +38,14 @@ const Partida = () => {
   const [skipped, setSkipped] = useState(new Set());
   const [isCorrect, setIsCorrect] = useState(null);
   const [isChecked, setIsChecked] = useState(false);
-  const [noPregunta, setNoPregunta] = useState(1);
+  const [noPregunta, setNoPregunta] = useState(null);
   const [cardSelected, setCardSelected] = useState(null);
   const [preguntas, setPreguntas] = useState([]);
+  const [preguntaSeleccionada, setPreguntaSeleccionada] = useState([]);
 
   useEffect(() => {
     console.log("useEffect Partida");
+    getRestaurarPartida();
   }, []);
 
   useEffect(() => {
@@ -77,21 +76,29 @@ const Partida = () => {
       });
   };
 
+  const getRestaurarPartida = () => {
+    Api.Get("/partida/restaurar-partida/1")
+      .then((res) => {
+        // console.log("Result Auth: ", res.data.json());
+        if (res.status === 200) {
+          const data = (res.data[0])[0];
+          console.log("restaurar ", data.Nivel);
+          setNoPregunta(data.Nivel);
+          setActiveStep((data.Nivel) - 1);
+        }
+      })
+      .catch((ex) => {
+        console.error("error", ex);
+      });
+
+  }
+
   /***
    *
    * INICIO STEPPER
    */
-
-  const isStepOptional = (step) => {
-    return step === 1;
-  };
-
   const isStepSkipped = (step) => {
     return skipped.has(step);
-  };
-
-  const isStepFailed = (step) => {
-    return step === 1;
   };
 
   const handleNext = () => {
@@ -105,25 +112,6 @@ const Partida = () => {
     setSkipped(newSkipped);
   };
 
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleSkip = () => {
-    if (!isStepOptional(activeStep)) {
-      // You probably want to guard against something like this,
-      // it should never occur unless someone's actively trying to break something.
-      throw new Error("You can't skip a step that isn't optional.");
-    }
-
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setSkipped((prevSkipped) => {
-      const newSkipped = new Set(prevSkipped.values());
-      newSkipped.add(activeStep);
-      return newSkipped;
-    });
-  };
-
   const handleReset = () => {
     setActiveStep(0);
   };
@@ -135,6 +123,11 @@ const Partida = () => {
   const handleAnswered = (_isCorrect, _cardSelected) => {
     const isCorrect = _isCorrect === 1 ? true : false;
 
+
+    const selected = preguntas[_cardSelected];
+    setPreguntaSeleccionada(selected);
+    //console.log("preguntasss ", preguntass);
+
     setIsCorrect(isCorrect);
     setCardSelected(_cardSelected);
   };
@@ -143,6 +136,27 @@ const Partida = () => {
     if (isCorrect === null) {
 
     } else {
+      if (isCorrect) {
+        const values = {
+          IdUsuario: 1,
+          Pregunta: preguntas[0],
+          Respuesta: preguntaSeleccionada.text,
+          EsCorrecta: preguntaSeleccionada.is_correct,
+          Puntos: 10,
+          Tipo: 2
+        };
+
+        Api.Post("/partida", values, "")
+          .then((res) => {
+            //console.log("Res partida: ", res);
+            if (res.status === 200) {
+
+            }
+          })
+          .catch((ex) => {
+            console.log("error", ex);
+          });
+      }
       setIsChecked(true);
     }
   }
@@ -165,59 +179,20 @@ const Partida = () => {
     setIsCorrect(null);
     setIsChecked(false);
   }
-  // return (
-  //   <Container maxWidth="md">
-  //     <Typography
-  //       component="h1"
-  //       variant="h2"
-  //       align="center"
-  //       color="text.primary"
-  //       gutterBottom
-  //     >
-  //       Trivia Guatemala
-  //     </Typography>
-  //     <Typography variant="h5" align="center" color="text.secondary" paragraph>
-  //       {preguntas[0]}
-  //     </Typography>
-  //     <Grid container spacing={4}>
-  //       {preguntas.map((res, i) => {
-  //         if (i > 0) {
-  //           return (
-  //             <Grid item md={4} key={i}>
-  //               <Card
-  //                 sx={{ maxWidth: 345 }}
-  //                 onClick={() => {
-  //                   handleAnswered(res.is_correct);
-  //                 }}
-  //               >
-  //                 <CardActionArea sx={{ height: 200 }}>
-  //                   <CardContent>
-  //                     <Typography gutterBottom variant="h5" component="div">
-  //                       {res.text}
-  //                     </Typography>
-  //                   </CardContent>
-  //                 </CardActionArea>
-  //               </Card>
-  //             </Grid>
-  //           );
-  //         }
-  //       })}
-  //     </Grid>
-  //   </Container>
-  // );
+
+  const headerButtons = {
+    backgroundColor: "#FCA311",
+  };
 
   return (
     <Container maxWidth="lg">
       <Box
         sx={{
-          width: "100%",
-
-          bgcolor: "background.paper",
-          mt: 8,
-          pb: 6,
+          width: "100%", bgcolor: "background.paper",
+          mt: 8, pb: 6,
         }}
       >
-        <Stepper activeStep={activeStep}>
+        <Stepper activeStep={activeStep} >
           {steps.map((label, index) => {
             const stepProps = {};
             const labelProps = {};
@@ -234,7 +209,13 @@ const Partida = () => {
               stepProps.completed = false;
             }
             return (
-              <Step key={label} {...stepProps}>
+              <Step key={label} {...stepProps}
+                sx={{
+                  '& .MuiStepLabel-root .Mui-active': {
+                    color: '#FCA311',
+                  },
+                }}
+              >
                 <StepLabel {...labelProps}>{label}</StepLabel>
               </Step>
             );
@@ -256,16 +237,7 @@ const Partida = () => {
               Step {activeStep + 1}
               <Container maxWidth="md">
                 <Typography
-                  component="h1"
-                  variant="h2"
-                  align="center"
-                  color="text.primary"
-                  gutterBottom
-                >
-                  Trivia Guatemala
-                </Typography>
-                <Typography
-                  variant="h5"
+                  variant="h4"
                   align="center"
                   color="text.secondary"
                   paragraph
@@ -287,7 +259,7 @@ const Partida = () => {
                           >
                             <CardActionArea sx={{ height: 200 }}>
                               <CardContent>
-                                <Typography gutterBottom variant="h5" component="div">
+                                <Typography gutterBottom variant="h5" component="div" align="center">
                                   {res.text}
                                 </Typography>
                               </CardContent>
@@ -316,7 +288,7 @@ const Partida = () => {
                     }
                     {
                       isChecked && !isCorrect && (
-                        <label style={{ color: "#FF0000", fontSize: 25 }}>Su respuesta es incorrecta</label>
+                        <label style={{ color: "#FF0000", fontSize: 25 }}>Su respuesta es incorrecta, Intentalo de nuevo!</label>
                       )
                     }
                   </Grid>
@@ -339,7 +311,8 @@ const Partida = () => {
           </Fragment>
         )}
       </Box>
-    </Container>
+    </Container >
+
   );
 };
 
