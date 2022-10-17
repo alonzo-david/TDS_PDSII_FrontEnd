@@ -280,7 +280,7 @@ const Partida = () => {
                           <Card
                             sx={{ maxWidth: 345 }}
                             onClick={() => {
-                              handleAnswered(res.is_correct, i);
+                              !isChecked && (handleAnswered(res.is_correct, i));
                             }}
                             key={i}
                             style={cardSelected == i ? { backgroundColor: "#4D8E17", color: "#FFFFFF" } : {}}
@@ -303,6 +303,10 @@ const Partida = () => {
                   alignItems="center"
                   justifyContent="center"
                   direction="column"
+                  sx={{
+                    pt: 3,
+                    pb: 6,
+                  }}
                 >
                   <Grid item md={12}>
                     {
