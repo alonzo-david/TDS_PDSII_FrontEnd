@@ -14,7 +14,7 @@ const Api = {
         "Access-Control-Allow-Methods": "GET",
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json",
-        "Access-Token": "Bearer " + token,
+        // "Access-Token": "Bearer " + token,
       },
     });
     return response;
@@ -27,7 +27,7 @@ const Api = {
         "Access-Control-Allow-Methods": "POST",
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json",
-        "Access-Token": "Bearer " + token,
+        // "Access-Token": "Bearer " + token,
       },
     });
     return response;
@@ -40,7 +40,7 @@ const Api = {
         headers: {
           "Access-Control-Allow-Origin": "*",
           "Content-Type": "application/json",
-          "Access-Token": "Bearer " + token,
+          // "Access-Token": "Bearer " + token,
         },
       }
     );
@@ -52,7 +52,7 @@ const Api = {
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json",
-        "Access-Token": "Bearer " + token,
+        // "Access-Token": "Bearer " + token,
       },
     });
     return response;
