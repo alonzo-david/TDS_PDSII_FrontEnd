@@ -62,13 +62,7 @@ const Api = {
 const ApiPregunta = {
   Get: async (endpoint) => {
     const response = await axios.get(URL_API_PREGUNTA + endpoint, {
-      headers: {
-        "Access-Control-Allow-Headers":
-          "Origin, X-Requested-With, Content-Type, Accept",
-        "Access-Control-Allow-Methods": "GET",
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json",
-      },
+      
     });
     return response;
   },
