@@ -19,8 +19,9 @@ import {
 import { Api, ApiPregunta } from "./../../services/Api";
 
 import "./Partida.css";
-import { withRouter } from "react-router-dom";
+import { withRouter, useHistory } from "react-router-dom";
 import { CheckSession } from "../../services/Sessions";
+import Swal from "sweetalert2";
 
 const steps = [
   "Nivel 1",
@@ -44,6 +45,7 @@ const Partida = (props) => {
   const [cardSelected, setCardSelected] = useState(null);
   const [preguntas, setPreguntas] = useState([]);
   const [preguntaSeleccionada, setPreguntaSeleccionada] = useState([]);
+  const history = useHistory();
 
   useEffect(() => {
     console.log("useEffect Partida");
@@ -51,9 +53,8 @@ const Partida = (props) => {
     // setNoPregunta(props.questionNo);
     // setActiveStep(props.questionNo - 1);
     // getPreguntas(props.questionNo);
-
-    const userid = CheckSession("userId");
     debugger;
+    const userid = CheckSession("userId");
     getRestaurarPartida(userid);
     //getRestaurarPartida();
   }, []);
@@ -87,21 +88,25 @@ const Partida = (props) => {
   };
 
   const getRestaurarPartida = (idUser) => {
-    const { currentLevel, currentPoints } = props;
+    const { currentLevel, currentScore, restartScore } = props;
+
+    restartScore();
 
     Api.Get("/partida/restaurar-partida/" + idUser)
       .then((res) => {
         // console.log("Result Auth: ", res.data.json());
+        debugger;
         if (res.status === 200) {
           const data = (res.data[0])[0];
-          console.log("restaurar ", data.Nivel);
-
+          console.log("restaurar nivel", data.Nivel);
+          console.log("restaurar puntaje", data.Puntaje);
+          debugger;
           setNoPregunta(data.Nivel);
           setActiveStep(data.Nivel - 1);
           getPreguntas(data.Nivel);
 
           currentLevel(data.Nivel);
-          currentPoints(data.Puntaje);
+          currentScore(data.Puntaje);
         }
       })
       .catch((ex) => {
@@ -164,11 +169,8 @@ const Partida = (props) => {
 
         Api.Post("/partida", values, "")
           .then((res) => {
-            //console.log("Res partida: ", res);
-            debugger;
+
             if (res.status === 200) {
-
-
             }
           })
           .catch((ex) => {
@@ -180,20 +182,42 @@ const Partida = (props) => {
   }
 
   const handleContinue = () => {
-    const { currentLevel, currentPoints } = props;
+    const { currentLevel, currentScore } = props;
     handleNext();
     if (noPregunta < 10) {
       setNoPregunta(noPregunta + 1);
     } else {
-      setNoPregunta(1);
-      handleReset();
+      Swal.fire({
+        icon: "success",
+        title: "¡Éxito!",
+        footer: "",
+        type: "success",
+        text: "¡Felicidades!, has terminado la partida, presiona continuar para inicar una nueva partida o finalizar para ir a la pantalla principal.",
+        allowOutsideClick: false,
+        showDenyButton: true,
+        confirmButtonText: "Continuar",
+        confirmButtonColor: "#4D8E17",
+        denyButtonText: "Finalizar",
+        denyButtonColor: "#FCA311",
+      }).then((response) => {
+        if (response.isConfirmed) {
+          //setNoPregunta(1);
+          handleReset();
+          const userid = CheckSession("userId");
+          getRestaurarPartida(userid);
+          
+        } else if (response.isDenied) {
+          history.push("/")
+        }
+      });
+
     }
 
     setIsChecked(false);
     setCardSelected(null);
 
     currentLevel(1);
-    currentPoints(10);
+    currentScore(10);
   }
 
   const handleRetry = () => {
