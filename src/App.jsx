@@ -25,7 +25,7 @@ const App = () => {
   return (
     <div className="container">
       <Header loggedIn={loggedIn} currentLevel={currentLevel} currentPoints={currentPoints} updateLevel={changeCurrentLevel} />
-      <Routes loggedIn={changeLogin} currentLevel={changeCurrentLevel} currentPoints={changeCurrentPoints} questionNo={currentLevel} />
+      <Routes loggedIn={changeLogin} currentLevel={changeCurrentLevel} currentPoints={changeCurrentPoints} />
       {/* <Footer /> */}
     </div>
   );
