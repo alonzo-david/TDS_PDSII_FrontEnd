@@ -24,8 +24,6 @@ const Header = (props) => {
 
   const [userName, setUserName] = useState("");
   const [userId, setUserId] = useState(0);
-  //const [progressPoints, setProgressPoints] = useState(props.currentPoints);
-  //const [progressLevel, setProgressLevel] = useState(props.currentLevel);
 
   const [loading, setLoading] = useState(false);
 
@@ -184,7 +182,7 @@ const Header = (props) => {
                   <>
                     <IconButton size="small" aria-label="show 4 new mails" color="inherit">
                       <StarIcon style={headerButtons} />
-                      Puntos {props.currentPoints}
+                      Puntos {props.currentScore}
                     </IconButton>
 
                     <IconButton size="small" edge="end" color="inherit" >

@@ -12,9 +12,6 @@ const Routes = (props) => {
         key={HOME.path}
         path={`${HOME.path}`}
         component={HOME.component}
-        // render={(routeProps) => (
-        //   <Home.component {...routeProps} loggedIn={props.loggedIn} currentLevel={props.currentLevel} currentPoints={props.currentPoints} questionNo={props.questionNo} />
-        // )}
         exact
       />
 
@@ -24,7 +21,7 @@ const Routes = (props) => {
             key={route.path}
             path={`${route.path}`}
             render={(routeProps) => (
-              <route.component {...routeProps} loggedIn={props.loggedIn} currentLevel={props.currentLevel} currentPoints={props.currentPoints} questionNo={props.questionNo} />
+              <route.component {...routeProps} loggedIn={props.loggedIn} currentLevel={props.currentLevel} currentScore={props.currentScore} restartScore={props.restartScore} questionNo={props.questionNo} />
             )}
             exact
             match={props.search}
@@ -38,7 +35,7 @@ const Routes = (props) => {
             key={route.path}
             path={`${route.path}`}
             render={(routeProps) => (
-              <route.component {...routeProps} loggedIn={props.loggedIn} currentLevel={props.currentLevel} currentPoints={props.currentPoints} questionNo={props.questionNo} />
+              <route.component {...routeProps} loggedIn={props.loggedIn} currentLevel={props.currentLevel} currentScore={props.currentScore} restartScore={props.restartScore} questionNo={props.questionNo} />
             )}
             exact
           />

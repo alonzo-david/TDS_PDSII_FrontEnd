@@ -28,7 +28,7 @@ const Home = (props) => {
 
   return (
     <div className="height-body" style={{ backgroundColor: "#EFEFEF" }}>
-      {isLogin ? <Dashboard currentLevel={props.currentLevel} currentPoints={props.currentPoints} /> : <Welcome />}
+      {isLogin ? <Dashboard /> : <Welcome />}
     </div>
   );
 };

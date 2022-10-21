@@ -12,8 +12,6 @@ import {
   Typography,
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { CheckSession } from "../../services/Sessions";
-import { Api } from "../../services/Api";
 
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
@@ -31,26 +29,6 @@ const Dashboard = (props) => {
     // getRestaurarPartida(userid);
     return () => clearInterval(interval);
   }, []);
-
-  const getRestaurarPartida = (idUser) => {
-    const { currentLevel, currentPoints } = props;
-
-    Api.Get("/partida/restaurar-partida/" + idUser)
-      .then((res) => {
-        // console.log("Result Auth: ", res.data.json());
-        debugger;
-        if (res.status === 200) {
-          const data = (res.data[0])[0];
-          console.log("restaurar ", data.Nivel);
-
-          currentLevel(data.Nivel);
-          currentPoints(data.Puntaje);
-        }
-      })
-      .catch((ex) => {
-        console.error("error", ex);
-      });
-  }
 
   const partidaPage = () => {
     history.push("/Partida");
@@ -113,15 +91,6 @@ const Dashboard = (props) => {
                 </Card>
               </Grid>
             </Grid>
-            {/* <Stack
-              sx={{ pt: 4 }}
-              direction="row"
-              spacing={2}
-              justifyContent="center"
-            >
-              <Button variant="contained">Main call to action</Button>
-              <Button variant="outlined">Secondary action</Button>
-            </Stack> */}
           </Container>
         </Box>
       </main>
