@@ -206,7 +206,7 @@ const Partida = (props) => {
           {steps.map((label, index) => {
             const stepProps = {};
             const labelProps = {};
-            if (isChecked && !isCorrect && index == noPregunta - 1) {
+            if (isChecked && !isCorrect && index === noPregunta - 1) {
               labelProps.optional = (
                 <Typography variant="caption" color="error">
                   Respuesta incorrecta
@@ -264,7 +264,7 @@ const Partida = (props) => {
                               !isChecked && (handleAnswered(res.is_correct, i));
                             }}
                             key={i}
-                            style={cardSelected == i ? { backgroundColor: "#4D8E17", color: "#FFFFFF" } : {}}
+                            style={cardSelected === i ? { backgroundColor: "#4D8E17", color: "#FFFFFF" } : {}}
                           >
                             <CardActionArea sx={{ height: 200 }}>
                               <CardContent>

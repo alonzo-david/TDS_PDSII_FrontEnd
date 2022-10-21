@@ -42,32 +42,6 @@ const Header = (props) => {
     //getRestaurarPartida(userid);
   }, [])
 
-  // useEffect(() => {
-  //   const userid = CheckSession("userId");
-  //   getRestaurarPartida(userid);
-  // }, [progressPoints])
-
-  // const getRestaurarPartida = (userId) => {
-  //   const { updateLevel } = props;
-
-  //   Api.Get("/partida/restaurar-partida/" + userId)
-  //     .then((res) => {
-  //       // console.log("Result Auth: ", res.data.json());
-  //       if (res.status === 200) {
-  //         const data = (res.data[0])[0];
-  //         console.log("restaurar ", data.Nivel);
-
-  //         updateLevel(data.Nivel);
-  //         setProgressLevel(data.Nivel + props.currentLevel);
-  //         setProgressPoints(data.Puntaje + props.currentPoints);
-  //       }
-  //     })
-  //     .catch((ex) => {
-  //       console.error("error", ex);
-  //     });
-
-  // }
-
   const handleOpenMenuBar = (event) => {
     console.log("CLICK OPEN MENU BAR");
     setOpenMenuBar(!openMenuBar);
@@ -93,6 +67,11 @@ const Header = (props) => {
     setOpenMenuBar(false);
     history.push("/Login");
   };
+
+  const handleRegister = () => {
+    setOpenMenuBar(false);
+    history.push("/Registrar");
+  }
 
   const handleLogOut = () => {
 
@@ -166,6 +145,9 @@ const Header = (props) => {
             <>
               <ListItem button onClick={handleLogin}>
                 <ListItemText primary={"Iniciar Sesión"} />
+              </ListItem>
+              <ListItem button onClick={handleRegister}>
+                <ListItemText primary={"Registrarme"} />
               </ListItem>
             </>
           )}

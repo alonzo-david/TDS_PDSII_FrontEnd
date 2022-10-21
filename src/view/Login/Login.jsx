@@ -16,7 +16,6 @@ import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import "./Login.css";
-import { common } from "@mui/material/colors";
 
 const Login = (props) => {
   const [, setData] = useState([]);
