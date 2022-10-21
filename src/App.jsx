@@ -8,24 +8,29 @@ import './App.css';
 const App = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [currentLevel, setCurrentLevel] = useState(0);
-  const [currentPoints, setCurrentPoints] = useState(0);
+  const [currentScore, setCurrentScore] = useState(0);
 
   const changeLogin = (value) => {
     setLoggedIn(value);
   }
 
-  const changeCurrentPoints = (value) => {
-    setCurrentPoints((prevState) => prevState + value);
+  const changeCurrentScore = (value) => {
+    setCurrentScore((prevState) => prevState + value);
   }
 
   const changeCurrentLevel = (value) => {
     setCurrentLevel((prevState) => prevState + value);
   }
 
+  const restartLevelsScore = () => {
+    setCurrentScore(0);
+    setCurrentLevel(0);
+  }
+
   return (
     <div className="container">
-      <Header loggedIn={loggedIn} currentLevel={currentLevel} currentPoints={currentPoints} updateLevel={changeCurrentLevel} />
-      <Routes loggedIn={changeLogin} currentLevel={changeCurrentLevel} currentPoints={changeCurrentPoints} />
+      <Header loggedIn={loggedIn} currentLevel={currentLevel} currentScore={currentScore} updateLevel={changeCurrentLevel} />
+      <Routes loggedIn={changeLogin} currentLevel={changeCurrentLevel} currentScore={changeCurrentScore} restartScore={restartLevelsScore} />
       {/* <Footer /> */}
     </div>
   );

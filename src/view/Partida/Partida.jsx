@@ -20,6 +20,7 @@ import { Api, ApiPregunta } from "./../../services/Api";
 
 import "./Partida.css";
 import { withRouter } from "react-router-dom";
+import { CheckSession } from "../../services/Sessions";
 
 const steps = [
   "Nivel 1",
@@ -46,19 +47,20 @@ const Partida = (props) => {
 
   useEffect(() => {
     console.log("useEffect Partida");
+
+    // setNoPregunta(props.questionNo);
+    // setActiveStep(props.questionNo - 1);
+    // getPreguntas(props.questionNo);
+
+    const userid = CheckSession("userId");
     debugger;
-    setNoPregunta(props.questionNo);
-    setActiveStep(props.questionNo - 1);
-    getPreguntas(props.questionNo);
+    getRestaurarPartida(userid);
     //getRestaurarPartida();
   }, []);
 
   useEffect(() => {
-    
-
     console.log("Partida No. Pregunta: ", noPregunta);
     getPreguntas(noPregunta);
-    
   }, [noPregunta]);
 
   const getTipoUsuarios = () => {
@@ -84,21 +86,27 @@ const Partida = (props) => {
       });
   };
 
-  const getRestaurarPartida = () => {
-    Api.Get("/partida/restaurar-partida/1")
+  const getRestaurarPartida = (idUser) => {
+    const { currentLevel, currentPoints } = props;
+
+    Api.Get("/partida/restaurar-partida/" + idUser)
       .then((res) => {
         // console.log("Result Auth: ", res.data.json());
         if (res.status === 200) {
           const data = (res.data[0])[0];
           console.log("restaurar ", data.Nivel);
+
           setNoPregunta(data.Nivel);
-          setActiveStep((data.Nivel) - 1);
+          setActiveStep(data.Nivel - 1);
+          getPreguntas(data.Nivel);
+
+          currentLevel(data.Nivel);
+          currentPoints(data.Puntaje);
         }
       })
       .catch((ex) => {
         console.error("error", ex);
       });
-
   }
 
   /***

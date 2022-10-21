@@ -27,8 +27,8 @@ const Dashboard = (props) => {
     const interval = setInterval(() => {
       setSeconds(seconds => seconds + 1);
     }, 1000);
-    const userid = CheckSession("userId");
-    getRestaurarPartida(userid);
+    // const userid = CheckSession("userId");
+    // getRestaurarPartida(userid);
     return () => clearInterval(interval);
   }, []);
 
