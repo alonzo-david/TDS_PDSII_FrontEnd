@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -9,17 +9,64 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { Badge, CssBaseline, Drawer, ListItem, ListItemText } from "@mui/material";
+import { Backdrop, Badge, CircularProgress, CssBaseline, Drawer, ListItem, ListItemText } from "@mui/material";
 import LinkButton from "../LinkButton/LinkButton";
 import { useHistory } from "react-router-dom";
 import CastleIcon from '@mui/icons-material/Castle';
 import StarIcon from '@mui/icons-material/Star';
+import { CheckSession, ClearSession } from "../../services/Sessions";
+import { Api } from "../../services/Api";
 
-const Header = () => {
-  const [auth, setAuth] = useState(false);
+const Header = (props) => {
+  const [isLogin, setIsLogin] = useState(props.loggedIn);
   const [menuLogin, setMenuLogin] = useState(null);
   const [openMenuBar, setOpenMenuBar] = useState(false);
+
+  const [userName, setUserName] = useState("");
+  const [userId, setUserId] = useState(0);
+  //const [progressPoints, setProgressPoints] = useState(props.currentPoints);
+  //const [progressLevel, setProgressLevel] = useState(props.currentLevel);
+
+  const [loading, setLoading] = useState(false);
+
   const history = useHistory();
+
+  useEffect(() => {
+    const value = CheckSession("isLogin");
+    setIsLogin(JSON.parse(value));
+    const username = CheckSession("userName");
+    setUserName(username);
+    const userid = CheckSession("userId");
+    setUserId(userid);
+
+    //getRestaurarPartida(userid);
+  }, [])
+
+  // useEffect(() => {
+  //   const userid = CheckSession("userId");
+  //   getRestaurarPartida(userid);
+  // }, [progressPoints])
+
+  // const getRestaurarPartida = (userId) => {
+  //   const { updateLevel } = props;
+
+  //   Api.Get("/partida/restaurar-partida/" + userId)
+  //     .then((res) => {
+  //       // console.log("Result Auth: ", res.data.json());
+  //       if (res.status === 200) {
+  //         const data = (res.data[0])[0];
+  //         console.log("restaurar ", data.Nivel);
+
+  //         updateLevel(data.Nivel);
+  //         setProgressLevel(data.Nivel + props.currentLevel);
+  //         setProgressPoints(data.Puntaje + props.currentPoints);
+  //       }
+  //     })
+  //     .catch((ex) => {
+  //       console.error("error", ex);
+  //     });
+
+  // }
 
   const handleOpenMenuBar = (event) => {
     console.log("CLICK OPEN MENU BAR");
@@ -27,7 +74,7 @@ const Header = () => {
   };
 
   const handleChange = (event) => {
-    setAuth(event.target.checked);
+    setIsLogin(event.target.checked);
   };
 
   const handleMenu = (event) => {
@@ -41,6 +88,28 @@ const Header = () => {
   const InitPage = () => {
     history.push("/");
   };
+
+  const handleLogin = () => {
+    setOpenMenuBar(false);
+    history.push("/Login");
+  };
+
+  const handleLogOut = () => {
+
+    setIsLogin(false);
+    setUserName("");
+    // setProgressLevel(0);
+    // setProgressPoints(0);
+    setOpenMenuBar(false);
+
+    ClearSession("isLogin");
+    ClearSession("userName");
+    ClearSession("userId");
+
+    setLoading(true);
+    history.push("/");
+    window.location.reload();
+  }
 
   const ProfilePage = () => {
     //history.push("/Perfil");
@@ -61,6 +130,10 @@ const Header = () => {
 
   return (
     <>
+      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+
       {openMenuBar && (
         <Drawer
           open={openMenuBar}
@@ -68,12 +141,35 @@ const Header = () => {
             setOpenMenuBar(!openMenuBar);
           }}
         >
-          <ListItem button>
-            <ListItemText primary={"Inicio"} />
-          </ListItem>
-          <ListItem button>
-            <ListItemText primary={"Búsqueda de amigos"} />
-          </ListItem>
+          {isLogin ? (
+            <>
+              <ListItem button>
+                <ListItemText primary={"Inicio"} />
+              </ListItem>
+              <ListItem button>
+                <ListItemText primary={"Mi Perfil"} />
+              </ListItem>
+              <ListItem button>
+                <ListItemText primary={"Amigos"} />
+              </ListItem>
+              <ListItem button>
+                <ListItemText primary={"Buscar amigos"} />
+              </ListItem>
+              <ListItem button>
+                <ListItemText primary={"Configuraciones"} />
+              </ListItem>
+              <ListItem button onClick={handleLogOut}>
+                <ListItemText primary={"Salir"} />
+              </ListItem>
+            </>
+          ) : (
+            <>
+              <ListItem button onClick={handleLogin}>
+                <ListItemText primary={"Iniciar Sesión"} />
+              </ListItem>
+            </>
+          )}
+
         </Drawer>
       )}
       <Box sx={{ flexGrow: 1 }}>
@@ -91,7 +187,7 @@ const Header = () => {
                 <MenuIcon style={headerButtons} />
               </IconButton>
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} onClick={ProfilePage}>
-                Grupo 6
+                {userName}
               </Typography>
 
               <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
@@ -101,19 +197,24 @@ const Header = () => {
               </Box>
               <Box sx={{ flexGrow: 1 }} />
               <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                <IconButton size="small" aria-label="show 4 new mails" color="inherit">
-                  <StarIcon style={headerButtons} />
-                  Puntos 85
-                </IconButton>
 
-                <IconButton size="small" edge="end" color="inherit" >
-                  <CastleIcon style={headerButtons} />
-                  Nivel 5/10
-                </IconButton>
+                {isLogin && (
+                  <>
+                    <IconButton size="small" aria-label="show 4 new mails" color="inherit">
+                      <StarIcon style={headerButtons} />
+                      Puntos {props.currentPoints}
+                    </IconButton>
+
+                    <IconButton size="small" edge="end" color="inherit" >
+                      <CastleIcon style={headerButtons} />
+                      Nivel {props.currentLevel}/10
+                    </IconButton>
+                  </>
+                )}
               </Box>
 
 
-              {auth ? (
+              {isLogin ? (
                 <div>
                   <IconButton
                     size="large"

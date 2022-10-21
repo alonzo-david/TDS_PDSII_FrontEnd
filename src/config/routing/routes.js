@@ -16,10 +16,7 @@ const PUBLIC_ROUTES = [
     component: views.Login,
     path: "/Login",
   },
-  {
-    component: views.Partida,
-    path: "/Partida",
-  },
+  
   {
     component: views.Registrar,
     path: "/Registrar"
@@ -45,6 +42,10 @@ const PRIVATE_ROUTES = [
   {
     component: views.MenuUsuario,
     path: "/MenuUsuario",
+  },
+  {
+    component: views.Partida,
+    path: "/Partida",
   },
 ];
 

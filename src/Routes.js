@@ -1,6 +1,7 @@
 import React from "react";
 import VIEWS from "./config/routing/routes";
 import { Switch, Route } from "react-router-dom";
+import Home from "./view/Home/Home";
 
 const Routes = (props) => {
   const { HOME, PUBLIC, PRIVATE, NOT_FOUND } = VIEWS;
@@ -11,6 +12,9 @@ const Routes = (props) => {
         key={HOME.path}
         path={`${HOME.path}`}
         component={HOME.component}
+        // render={(routeProps) => (
+        //   <Home.component {...routeProps} loggedIn={props.loggedIn} currentLevel={props.currentLevel} currentPoints={props.currentPoints} questionNo={props.questionNo} />
+        // )}
         exact
       />
 
@@ -20,10 +24,7 @@ const Routes = (props) => {
             key={route.path}
             path={`${route.path}`}
             render={(routeProps) => (
-              <route.component
-                {...routeProps}
-                itemShopping={props.itemCarrito}
-              />
+              <route.component {...routeProps} loggedIn={props.loggedIn} currentLevel={props.currentLevel} currentPoints={props.currentPoints} questionNo={props.questionNo} />
             )}
             exact
             match={props.search}
@@ -37,9 +38,7 @@ const Routes = (props) => {
             key={route.path}
             path={`${route.path}`}
             render={(routeProps) => (
-              <route.component
-                {...routeProps}
-              />
+              <route.component {...routeProps} loggedIn={props.loggedIn} currentLevel={props.currentLevel} currentPoints={props.currentPoints} questionNo={props.questionNo} />
             )}
             exact
           />
