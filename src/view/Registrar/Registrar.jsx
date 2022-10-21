@@ -18,6 +18,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import Moment from "moment/moment";
 import { Api } from "../../services/Api";
+import Swal from "sweetalert2";
 
 const theme = createTheme();
 
@@ -54,7 +55,7 @@ const Registrar = () => {
   }
 
   const signUp = (data) => {
-    
+
     const value = data.get('FechaNacimiento');
     const [day, month, year] = value.split('-');
     const date = new Date(
@@ -82,14 +83,40 @@ const Registrar = () => {
         console.log("Res: ", res);
         setLoading(false);
         const data = res.data;
-        
+
         if (res.status === 201) {
           setErrorMessage('');
-          toLogin();
+          Swal.fire({
+            icon: "success",
+            title: "¡Éxito!",
+            footer: "",
+            type: "success",
+            text: "Usuario creado correctamente, por favor inicia sesión.",
+            allowOutsideClick: false,
+            confirmButtonColor: "#4D8E17"
+          }).then((response) => {
+            if (response.isConfirmed) {
+              toLogin();
+            }
+          });
+
         } else if (res.status === 200) {
           if (data.code === 0) {
             if (data.message === "USER_ALREADY_EXISTS") {
-              setErrorMessage("Ya existe una cuenta con el usuario ingresado.");
+              Swal.fire({
+                icon: "error",
+                title: "Error!",
+                footer: "",
+                type: "error",
+                text: "Ya existe una cuenta con el usuario ingresado",
+                allowOutsideClick: false,
+                confirmButtonColor: "#DC3545"
+              }).then((response) => {
+                if (response.isConfirmed) {
+                  setErrorMessage("Ya existe una cuenta con el usuario ingresado.");
+                }
+              });
+
             }
           }
         }
