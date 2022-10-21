@@ -15,6 +15,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { withRouter } from "react-router-dom";
 
 const cards = [1, 2, 3];
 
@@ -24,15 +25,6 @@ const Welcome = () => {
 
     return (
         <ThemeProvider theme={theme}>
-          {/* <CssBaseline />
-          <AppBar position="relative">
-            <Toolbar>
-              <CameraIcon sx={{ mr: 2 }} />
-              <Typography variant="h6" color="inherit" noWrap>
-                Album layout
-              </Typography>
-            </Toolbar>
-          </AppBar> */}
           <main>
             {/* Hero unit */}
             <Box
@@ -123,4 +115,4 @@ const Welcome = () => {
       );
 }
 
-export default Welcome;
+export default withRouter(Welcome);

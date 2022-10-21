@@ -1,4 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { Link, withRouter, useHistory } from "react-router-dom";
+import { Api } from "./../../services/Api";
+
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -9,51 +14,75 @@ import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Link, withRouter } from "react-router-dom";
-
-import { Api } from "./../../services/Api";
-import { useHistory } from "react-router-dom";
 
 import "./Login.css";
+import { common } from "@mui/material/colors";
 
 const Login = (props) => {
   const [, setData] = useState([]);
   const [, setDataUsuario] = useState([]);
-  const [usuario, setUsuario] = useState("");
-  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const history = useHistory();
 
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
 
-  const signIn = () => {
-    fetchLogin();
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    //handleToggle();
+    setLoading(true);
+
+    const data = new FormData(event.currentTarget);
+    signIn(data);
   };
 
-  const handleSubmit = () => {};
+  const signIn = (data) => {
+    const { loggedIn } = props;
 
-  const fetchLogin = () => {
-    let JData = {
-      Usuario: usuario,
-      Password: password,
+
+    let body = {
+      Usuario: data.get('userName'),
+      Password: data.get('password'),
     };
 
-    Api.Post("/auth/login", JData, "")
-      .then((res) => {
-        console.log("Result Auth: ", res);
-        // if (res.status === 200) {
-        //   if (res.data.success === 1) {
-        //     console.log("data login: ", JSON.stringify(res.data.data.dataUsuario));
-        //     setData(res.data.data);
-        //     setDataUsuario(res.data.data.dataUsuario);
-        //     localStorage.setItem("token-priv", res.data.data.tokenPriv);
-        //     localStorage.setItem("datos-personales", JSON.stringify(res.data.data.dataUsuario));
+    console.log("Data: ", body);
 
-        //   }
-        // }
+    Api.Post("/auth/login", body, "")
+      .then((res) => {
+        console.log("Res Login: ", res);
+        if (res.status === 200) {
+          console.log("Login data: ", res.data)
+          const data = res.data; //(res.data[0])[0];
+
+          if (data.code === 0) {
+            if (data.message === "PASSWORD_INCORRECT") {
+              setErrorMessage("Contraseña incorrecta.");
+            }else if(data.message === "NOT_FOUND_USER"){
+              setErrorMessage("Usuario y/o contraseña incorrectos.");
+            }
+          } else {
+            localStorage.setItem("isLogin", true);
+            localStorage.setItem("userName", data.NombreCompleto);
+            localStorage.setItem("userId", data.Id);
+            setErrorMessage("");
+            loggedIn(true);
+            HomePage();
+          }
+          setLoading(false);
+
+        }
       })
-      .catch((ex) => {
-        console.error("error", ex);
+      .catch((error) => {
+        setLoading(false);
+        console.error("error", error);
       });
+
+  };
+
+  const HomePage = () => {
+    history.push("/");
+    window.location.reload();
+    //history.push("/");
   };
 
   const theme = createTheme({
@@ -66,89 +95,101 @@ const Login = (props) => {
   });
 
   return (
-    <ThemeProvider theme={theme}>
-      <Grid container component="main" sx={{ height: "100vh" }}>
-        <CssBaseline />
-        <Grid
-          item
-          xs={false}
-          sm={4}
-          md={7}
-          sx={{
-            backgroundImage: "url(https://source.unsplash.com/random)",
-            backgroundRepeat: "no-repeat",
-            backgroundColor: (t) =>
-              t.palette.mode === "light"
-                ? t.palette.grey[50]
-                : t.palette.grey[900],
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        />
-        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-          <Box
+    <>
+      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+
+      <ThemeProvider theme={theme}>
+        <Grid container component="main" sx={{ height: "100vh" }}>
+          <CssBaseline />
+          <Grid
+            item
+            xs={false}
+            sm={4}
+            md={7}
             sx={{
-              my: 8,
-              mx: 4,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
+              backgroundImage: "url(https://source.unsplash.com/random)",
+              backgroundRepeat: "no-repeat",
+              backgroundColor: (t) =>
+                t.palette.mode === "light"
+                  ? t.palette.grey[50]
+                  : t.palette.grey[900],
+              backgroundSize: "cover",
+              backgroundPosition: "center",
             }}
-          >
-            <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-              <LockOutlinedIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5">
-              Bienvenido a TriviaGuatemala
-            </Typography>
+          />
+          <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+            <Box
+              sx={{
+                my: 8,
+                mx: 4,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+                <LockOutlinedIcon />
+              </Avatar>
+              <Typography component="h1" variant="h5">
+                Bienvenido a TriviaGuatemala
+              </Typography>
 
-            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
-              {" "}
-              {/* noValidate> */}
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="userName"
-                label="Usuario"
-                name="userName"
-                autoComplete="userName"
-                autoFocus
-                theme={theme}
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                theme={theme}
-              />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-                style={{ backgroundColor: "#4D8E17", color: "#FFFFFF" }}
-              >
-                Ingresar
-              </Button>
+              <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+                {" "}
+                {/* noValidate> */}
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="userName"
+                  label="Usuario"
+                  name="userName"
+                  autoComplete="userName"
+                  autoFocus
+                  theme={theme}
+                />
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  autoComplete="current-password"
+                  theme={theme}
+                />
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                  style={{ backgroundColor: "#4D8E17", color: "#FFFFFF" }}
+                >
+                  Ingresar
+                </Button>
 
-              <Grid container>
-                <Grid item>
-                  <Link to="/Registrar" variant="body2">
-                    {"¿No tienes una cuenta? Registrate."}
-                  </Link>
+                <Grid container>
+                  <Grid item md={12}>
+                    <Link to="/Registrar" variant="body2">
+                      {"¿No tienes una cuenta? Registrate."}
+                    </Link>
+                  </Grid>
+                  {errorMessage !== "" && (
+                    <Grid item md={12}>
+                      <Typography variant="caption" align="center" color="error.main" paragraph>{errorMessage}</Typography>
+                    </Grid>
+                  )}
                 </Grid>
-              </Grid>
+              </Box>
             </Box>
-          </Box>
+          </Grid>
+
         </Grid>
-      </Grid>
-    </ThemeProvider>
+      </ThemeProvider>
+    </>
   );
 };
 

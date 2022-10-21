@@ -12,7 +12,7 @@ import Container from "@mui/material/Container";
 import dayjs from "dayjs";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Switch } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -182,4 +182,4 @@ const Registrar = () => {
   );
 };
 
-export default Registrar;
+export default withRouter(Registrar);

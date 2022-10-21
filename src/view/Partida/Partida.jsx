@@ -19,6 +19,7 @@ import {
 import { Api, ApiPregunta } from "./../../services/Api";
 
 import "./Partida.css";
+import { withRouter } from "react-router-dom";
 
 const steps = [
   "Nivel 1",
@@ -33,7 +34,7 @@ const steps = [
   "Nivel 10",
 ];
 
-const Partida = () => {
+const Partida = (props) => {
   const [activeStep, setActiveStep] = useState(0);
   const [skipped, setSkipped] = useState(new Set());
   const [isCorrect, setIsCorrect] = useState(null);
@@ -45,12 +46,19 @@ const Partida = () => {
 
   useEffect(() => {
     console.log("useEffect Partida");
-    getRestaurarPartida();
+    debugger;
+    setNoPregunta(props.questionNo);
+    setActiveStep(props.questionNo - 1);
+    getPreguntas(props.questionNo);
+    //getRestaurarPartida();
   }, []);
 
   useEffect(() => {
+    
+
     console.log("Partida No. Pregunta: ", noPregunta);
     getPreguntas(noPregunta);
+    
   }, [noPregunta]);
 
   const getTipoUsuarios = () => {
@@ -149,7 +157,9 @@ const Partida = () => {
         Api.Post("/partida", values, "")
           .then((res) => {
             //console.log("Res partida: ", res);
+            debugger;
             if (res.status === 200) {
+
 
             }
           })
@@ -162,6 +172,7 @@ const Partida = () => {
   }
 
   const handleContinue = () => {
+    const { currentLevel, currentPoints } = props;
     handleNext();
     if (noPregunta < 10) {
       setNoPregunta(noPregunta + 1);
@@ -172,6 +183,9 @@ const Partida = () => {
 
     setIsChecked(false);
     setCardSelected(null);
+
+    currentLevel(1);
+    currentPoints(10);
   }
 
   const handleRetry = () => {
@@ -179,10 +193,6 @@ const Partida = () => {
     setIsCorrect(null);
     setIsChecked(false);
   }
-
-  const headerButtons = {
-    backgroundColor: "#FCA311",
-  };
 
   return (
     <Container maxWidth="lg">
@@ -234,7 +244,6 @@ const Partida = () => {
         ) : (
           <Fragment>
             <Typography sx={{ mt: 2, mb: 1 }}>
-              Step {activeStep + 1}
               <Container maxWidth="md">
                 <Typography
                   variant="h4"
@@ -316,4 +325,4 @@ const Partida = () => {
   );
 };
 
-export default Partida;
+export default withRouter(Partida);
