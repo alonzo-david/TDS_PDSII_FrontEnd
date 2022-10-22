@@ -3,6 +3,7 @@ import VIEWS from "./config/routing/routes";
 import { Switch, Route } from "react-router-dom";
 import Home from "./view/Home/Home";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
+import PublicRoute from "./components/PublicRoute/PublicRoute";
 
 const Routes = (props) => {
   const { HOME, PUBLIC, PRIVATE, NOT_FOUND } = VIEWS;
@@ -18,42 +19,34 @@ const Routes = (props) => {
 
       {PUBLIC.map((route) => {
         return (
-          <Route
+          <PublicRoute
             key={route.path}
-            path={`${route.path}`}
-            render={(routeProps) => (
-              <route.component {...routeProps} loggedIn={props.loggedIn} currentLevel={props.currentLevel} currentScore={props.currentScore} restartScore={props.restartScore} questionNo={props.questionNo} />
-            )}
-            exact
-            match={props.search}
+            path={route.path}
+            exact={true}
+
+            loggedIn={props.loggedIn}
+            currentLevel={props.currentLevel}
+            currentScore={props.currentScore}
+            restartScore={props.restartScore}
+
+            questionNo={props.questionNo}
+            routes={route}
           />
         );
       })}
 
       {PRIVATE.map((route) => {
-        // return (
-        //   <Route
-        //     key={route.path}
-        //     path={`${route.path}`}
-        //     render={(routeProps) => (
-        //       <route.component {...routeProps} loggedIn={props.loggedIn} currentLevel={props.currentLevel} currentScore={props.currentScore} restartScore={props.restartScore} questionNo={props.questionNo} />
-        //     )}
-        //     exact
-        //   />
-        // );
-        //debugger;
-        return(
+        return (
           <PrivateRoute
             key={route.path}
             path={route.path}
             exact={true}
-
-            loggedIn={props.loggedIn} 
-            currentLevel={props.currentLevel} 
-            currentScore={props.currentScore} 
-            restartScore={props.restartScore} 
+            
+            loggedIn={props.loggedIn}
+            currentLevel={props.currentLevel}
+            currentScore={props.currentScore}
+            restartScore={props.restartScore}
             questionNo={props.questionNo}
-
             routes={route}
           />
         );
