@@ -88,6 +88,20 @@ const Header = (props) => {
     window.location.reload();
   }
 
+  const handleProfile = () => {
+    
+    setLoading(true);
+    
+    const interval = setInterval(() => {
+      setOpenMenuBar(false);
+      setLoading(false);
+      clearInterval(interval);
+      history.push("/Perfil");
+    }, 300);
+
+    
+  }
+
   const ProfilePage = () => {
     //history.push("/Perfil");
   };
@@ -123,7 +137,7 @@ const Header = (props) => {
               <ListItem button>
                 <ListItemText primary={"Inicio"} />
               </ListItem>
-              <ListItem button>
+              <ListItem button onClick={handleProfile}>
                 <ListItemText primary={"Mi Perfil"} />
               </ListItem>
               <ListItem button>
@@ -131,9 +145,6 @@ const Header = (props) => {
               </ListItem>
               <ListItem button>
                 <ListItemText primary={"Buscar amigos"} />
-              </ListItem>
-              <ListItem button>
-                <ListItemText primary={"Configuraciones"} />
               </ListItem>
               <ListItem button onClick={handleLogOut}>
                 <ListItemText primary={"Salir"} />
@@ -194,38 +205,7 @@ const Header = (props) => {
               </Box>
 
 
-              {isLogin ? (
-                <div>
-                  <IconButton
-                    size="large"
-                    aria-label="account of current user"
-                    aria-controls="menu-appbar"
-                    aria-haspopup="true"
-                    onClick={handleMenu}
-                    color="inherit"
-                  >
-                    <AccountCircle />
-                  </IconButton>
-                  <Menu
-                    id="menu-appbar"
-                    anchorEl={menuLogin}
-                    anchorOrigin={{
-                      vertical: "top",
-                      horizontal: "right",
-                    }}
-                    keepMounted
-                    transformOrigin={{
-                      vertical: "top",
-                      horizontal: "right",
-                    }}
-                    open={Boolean(menuLogin)}
-                    onClose={handleClose}
-                  >
-                    <MenuItem onClick={handleClose}>Profile</MenuItem>
-                    <MenuItem onClick={handleClose}>My account</MenuItem>
-                  </Menu>
-                </div>
-              ) : (
+              {!isLogin && (
                 <LinkButton to="/Login">Iniciar Sesión</LinkButton>
               )}
             </Toolbar>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, withRouter, useHistory } from "react-router-dom";
 import {
   Avatar,
@@ -23,62 +23,63 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Api } from "../../services/Api";
+import * as AuthService from "../../services/AuthService";
 
 const theme = createTheme();
 
-const Registrar = () => {
+const Perfil = () => {
+    const [nombres, setNombres] = useState("");
+    const [apellidos, setApellidos] = useState("");
+    const [fechaNacimiento, setFechaNacimiento] = useState(null);
+    const [correoElectronico, setCorreoElectronico] = useState("");
+
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [recibirNotificacion, setRecibirNotificacion] = useState(true);
-  const [reproducirMusica, setReproducirMusica] = useState(true);
-  const [fechaNacimiento, setFechaNacimiento] = useState(null);
   const history = useHistory();
 
-  const handleChangeNotificacion = () => {
-    setRecibirNotificacion(!recibirNotificacion);
-  };
+  useEffect(() => {
+    const userId = AuthService.userId();
+    getProfile(userId);
+  }, []);
 
-  const handleChangeMusica = () => {
-    setReproducirMusica(!reproducirMusica);
+  const getProfile = (userId) => {
+    Api.Get("/persona/" + userId, "")
+      .then((res) => {
+        const data = (res.data[0])[0];
+        if (res.status === 200) {
+            setNombres(data.Nombres);
+            setApellidos(data.Apellidos);
+            setFechaNacimiento(data.FechaNacimiento);
+            setCorreoElectronico(data.CorreoElectronico);
+        }
+      })
+      .catch((ex) => {
+        console.error("error", ex);
+      });
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     setLoading(true);
     const data = new FormData(event.currentTarget);
-    // console.log({
-    //   email: data.get("email"),
-    //   password: data.get("password"),
-    // });
-
     signUp(data);
   };
 
-  const toLogin = () => {
-    history.push("/Login");
-  }
-
   const signUp = (data) => {
-
-    const value = data.get('FechaNacimiento');
-    const [day, month, year] = value.split('-');
-    const date = new Date(
-      +year,
-      +month - 1,
-      +day
-    );
+    const value = data.get("FechaNacimiento");
+    const [day, month, year] = value.split("-");
+    const date = new Date(+year, +month - 1, +day);
     const dateFormatted = Moment(date).format("YYYY-MM-DD");
 
     const body = {
-      Nombres: data.get('Nombres'),
-      Apellidos: data.get('Apellidos'),
+      Nombres: data.get("Nombres"),
+      Apellidos: data.get("Apellidos"),
       FechaNacimiento: dateFormatted, //moment(Date()).format("YYYY-MM-DD"),
-      CorreoElectronico: data.get('CorreoElectronico'),
-      Usuario: data.get('Usuario'),
-      Password: data.get('Password'),
-      RecibirNotificacion: 0,
-      ReproducirMusica: 0
-    }
+      CorreoElectronico: data.get("CorreoElectronico"),
+      Usuario: data.get("Usuario"),
+      Password: data.get("Password"),
+      RecibirNotificacion: data.get("RecibirNotificacion") === "on" ? 1 : 0,
+      ReproducirMusica: data.get("ReproducirMusica") === "on" ? 1 : 0,
+    };
 
     console.log("Data Body: ", body);
 
@@ -88,54 +89,21 @@ const Registrar = () => {
         setLoading(false);
         const data = res.data;
 
-        if (res.status === 201) {
-          setErrorMessage('');
-          Swal.fire({
-            icon: "success",
-            title: "¡Éxito!",
-            footer: "",
-            type: "success",
-            text: "Usuario creado correctamente, por favor inicia sesión.",
-            allowOutsideClick: false,
-            confirmButtonColor: "#4D8E17"
-          }).then((response) => {
-            if (response.isConfirmed) {
-              toLogin();
-            }
-          });
-
-        } else if (res.status === 200) {
-          if (data.code === 0) {
-            if (data.message === "USER_ALREADY_EXISTS") {
-              Swal.fire({
-                icon: "error",
-                title: "Error!",
-                footer: "",
-                type: "error",
-                text: "Ya existe una cuenta con el usuario ingresado",
-                allowOutsideClick: false,
-                confirmButtonColor: "#DC3545"
-              }).then((response) => {
-                if (response.isConfirmed) {
-                  setErrorMessage("Ya existe una cuenta con el usuario ingresado.");
-                }
-              });
-
-            }
-          }
+        if (res.status === 200) {
         }
-
-
       })
       .catch((error) => {
         setLoading(false);
         console.error("error", error);
-      })
-  }
+      });
+  };
 
   return (
     <>
-      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
         <CircularProgress color="inherit" />
       </Backdrop>
 
@@ -148,14 +116,15 @@ const Registrar = () => {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              mt: 8, pb: 6,
+              mt: 8,
+              pb: 6,
             }}
           >
             <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Sign up
+              Perfil
             </Typography>
             <Box
               component="form"
@@ -173,6 +142,7 @@ const Registrar = () => {
                     id="Nombres"
                     label="Nombres"
                     autoFocus
+                    value={nombres}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -182,7 +152,7 @@ const Registrar = () => {
                     id="Apellidos"
                     label="Apellidos"
                     name="Apellidos"
-                    autoComplete="family-name"
+                    value={apellidos}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -190,14 +160,22 @@ const Registrar = () => {
                     <DatePicker
                       label="Fecha de Nacimiento"
                       value={fechaNacimiento}
-                      minDate={dayjs('01-01-1980')}
+                      minDate={dayjs("01-01-1980")}
                       maxDate={dayjs(new Date())}
                       inputFormat="DD-MM-YYYY"
                       mask="__-__-____"
                       onChange={(newValue) => {
                         setFechaNacimiento(newValue);
                       }}
-                      renderInput={(params) => <TextField {...params} helperText="dd-mm-yyyy" fullWidth id="FechaNacimiento" name="FechaNacimiento" />}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          helperText="dd-mm-yyyy"
+                          fullWidth
+                          id="FechaNacimiento"
+                          name="FechaNacimiento"
+                        />
+                      )}
                     />
                   </LocalizationProvider>
                 </Grid>
@@ -209,19 +187,21 @@ const Registrar = () => {
                     label="Correo Electronico"
                     name="CorreoElectronico"
                     autoComplete="email"
+                    value={correoElectronico}
                   />
                 </Grid>
-                <Grid item xs={12}>
+                {/* <Grid item xs={12}>
                   <TextField
                     required
                     fullWidth
                     id="Usuario"
                     label="Usuario"
                     name="Usuario"
-                    autoComplete="email"
+                    autoComplete="usuario"
+                    value={usuario}
                   />
-                </Grid>
-                <Grid item xs={12}>
+                </Grid> */}
+                {/* <Grid item xs={12}>
                   <TextField
                     required
                     fullWidth
@@ -229,36 +209,8 @@ const Registrar = () => {
                     label="Password"
                     type="password"
                     id="Password"
-                    autoComplete="new-password"
-                  />
-                </Grid>
-
-                {/* <Grid item xs={12} sm={6}>
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        id="RecibirNotificacion"
-                        name="RecibirNotificacion"
-                        checked={recibirNotificacion}
-                        onChange={handleChangeNotificacion}
-                        inputProps={{ "aria-label": "controlled" }}
-                      />
-                    }
-                    label="Recibir Notificaciones"
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        id="ReproducirMusica"
-                        name="ReproducirMusica"
-                        checked={reproducirMusica}
-                        onChange={handleChangeMusica}
-                        inputProps={{ "aria-label": "controlled" }}
-                      />
-                    }
-                    label="Reproducir Musica"
+                    autoComplete="password"
+                    value={}
                   />
                 </Grid> */}
               </Grid>
@@ -268,20 +220,8 @@ const Registrar = () => {
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
-                Registrar
+                Guardar
               </Button>
-              <Grid container justifyContent="flex-end">
-                <Grid item md={12}>
-                  <Link to="/Login" variant="body2">
-                    ¿Ya tienes una cuenta? Accede a ella.
-                  </Link>
-                </Grid>
-                {errorMessage !== "" && (
-                  <Grid item md={12}>
-                    <Typography variant="caption" align="center" color="error.main" paragraph>{errorMessage}</Typography>
-                  </Grid>
-                )}
-              </Grid>
             </Box>
           </Box>
         </Container>
@@ -290,4 +230,4 @@ const Registrar = () => {
   );
 };
 
-export default withRouter(Registrar);
+export default withRouter(Perfil);

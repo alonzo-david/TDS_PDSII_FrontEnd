@@ -182,8 +182,15 @@ const Partida = (props) => {
   }
 
   const handleContinue = () => {
-    const { currentLevel, currentScore } = props;
+    const { currentLevel, currentScore, restartScore } = props;
     handleNext();
+
+    setIsChecked(false);
+    setCardSelected(null);
+
+    currentLevel(1);
+    currentScore(10);
+
     if (noPregunta < 10) {
       setNoPregunta(noPregunta + 1);
     } else {
@@ -207,17 +214,14 @@ const Partida = (props) => {
           getRestaurarPartida(userid);
           
         } else if (response.isDenied) {
+          restartScore();
           history.push("/")
         }
       });
 
     }
 
-    setIsChecked(false);
-    setCardSelected(null);
-
-    currentLevel(1);
-    currentScore(10);
+    
   }
 
   const handleRetry = () => {
@@ -265,9 +269,7 @@ const Partida = (props) => {
         </Stepper>
         {activeStep === steps.length ? (
           <Fragment>
-            <Typography sx={{ mt: 2, mb: 1 }}>
-              All steps completed - you&apos;re finished
-            </Typography>
+            
             <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
               <Box sx={{ flex: "1 1 auto" }} />
               <Button onClick={handleReset}>Reset</Button>
