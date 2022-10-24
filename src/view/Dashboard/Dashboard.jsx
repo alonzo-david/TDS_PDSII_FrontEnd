@@ -12,6 +12,8 @@ import {
   Typography,
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import * as AuthService from "../../services/AuthService";
+import { images } from "../../services/Avatars";
 
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
@@ -19,15 +21,12 @@ const theme = createTheme();
 
 const Dashboard = (props) => {
   const [seconds, setSeconds] = useState(0);
+  const [avatar, setAvatar] = useState("");
   const history = useHistory();
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setSeconds(seconds => seconds + 1);
-    }, 1000);
-    // const userid = CheckSession("userId");
-    // getRestaurarPartida(userid);
-    return () => clearInterval(interval);
+    const _avatar = AuthService.avatar();
+    setAvatar(_avatar);
   }, []);
 
   const partidaPage = () => {
@@ -50,23 +49,13 @@ const Dashboard = (props) => {
             <Grid container spacing={10}>
               <Grid item xs={12} sm={6}>
                 <Card sx={{ maxWidth: 345, height: 225 }}>
-                  {seconds % 3 == 0 ? (
-                    <CardMedia
-                      component="img"
-                      height="225"
-                      image="./img/man02_normal.png"
-                      alt="avatar"
-                      sx={{ padding: "5px 5px 0 5px", objectFit: "contain" }}
-                    />
-                  ) : (
-                    <CardMedia
-                      component="img"
-                      height="225"
-                      image="./img/man02_triste.png"
-                      alt="avatar"
-                      sx={{ padding: "5px 5px 0 5px", objectFit: "contain" }}
-                    />
-                  )}
+                  <CardMedia
+                    component="img"
+                    height="225"
+                    image={avatar}
+                    alt="avatar"
+                    sx={{ padding: "5px 5px 0 5px", objectFit: "contain" }}
+                  />                  
                 </Card>
               </Grid>
 
