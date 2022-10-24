@@ -14,3 +14,8 @@ export const userName = () => {
   const result = CheckSession("userName");
   return result;
 };
+
+export const avatar = () => {
+  const result = CheckSession("avatar");
+  return result;
+};
