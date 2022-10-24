@@ -15,7 +15,7 @@ const Welcome = () => {
           sm={12}
           md={12}
           sx={{
-            backgroundImage: "url(./img/dashboard.png)",//"url(https://source.unsplash.com/random)",
+            backgroundImage: "url(./img/welcome.png)",//"url(https://source.unsplash.com/random)",
             backgroundRepeat: "no-repeat",
             backgroundColor: (t) =>
               t.palette.mode === "light"
