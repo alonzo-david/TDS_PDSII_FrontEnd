@@ -13,6 +13,9 @@ import {
   Backdrop,
   CircularProgress,
   Switch,
+  Checkbox,
+  RadioGroup,
+  Radio,
 } from "@mui/material";
 import Moment from "moment/moment";
 import Swal from "sweetalert2";
@@ -23,62 +26,55 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Api } from "../../services/Api";
+import { images } from "../../services/Avatars";
 
 const theme = createTheme();
 
+
+
 const Registrar = () => {
+  const [formulario, setFormulario] = useState({
+    Nombres: "",
+    Apellidos: "",
+    FechaNacimiento: "",
+    CorreoElectronico: "",
+    Usuario: "",
+    Password: "",
+    Avatar: ""
+  });
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [recibirNotificacion, setRecibirNotificacion] = useState(true);
-  const [reproducirMusica, setReproducirMusica] = useState(true);
   const [fechaNacimiento, setFechaNacimiento] = useState(null);
+  const [avSelected, setAvSelected] = useState("");
   const history = useHistory();
-
-  const handleChangeNotificacion = () => {
-    setRecibirNotificacion(!recibirNotificacion);
-  };
-
-  const handleChangeMusica = () => {
-    setReproducirMusica(!reproducirMusica);
-  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     setLoading(true);
     const data = new FormData(event.currentTarget);
-    // console.log({
-    //   email: data.get("email"),
-    //   password: data.get("password"),
-    // });
 
     signUp(data);
   };
 
   const toLogin = () => {
     history.push("/Login");
-  }
+  };
 
   const signUp = (data) => {
-
-    const value = data.get('FechaNacimiento');
-    const [day, month, year] = value.split('-');
-    const date = new Date(
-      +year,
-      +month - 1,
-      +day
-    );
+    const value = data.get("FechaNacimiento");
+    const [day, month, year] = value.split("-");
+    const date = new Date(+year, +month - 1, +day);
     const dateFormatted = Moment(date).format("YYYY-MM-DD");
 
     const body = {
-      Nombres: data.get('Nombres'),
-      Apellidos: data.get('Apellidos'),
+      Nombres: data.get("Nombres"),
+      Apellidos: data.get("Apellidos"),
       FechaNacimiento: dateFormatted, //moment(Date()).format("YYYY-MM-DD"),
-      CorreoElectronico: data.get('CorreoElectronico'),
-      Usuario: data.get('Usuario'),
-      Password: data.get('Password'),
-      RecibirNotificacion: 0,
-      ReproducirMusica: 0
-    }
+      CorreoElectronico: data.get("CorreoElectronico"),
+      Usuario: data.get("Usuario"),
+      Password: data.get("Password"),
+      IdAvatar: data.get("Avatar")    
+    };
 
     console.log("Data Body: ", body);
 
@@ -89,7 +85,7 @@ const Registrar = () => {
         const data = res.data;
 
         if (res.status === 201) {
-          setErrorMessage('');
+          setErrorMessage("");
           Swal.fire({
             icon: "success",
             title: "¡Éxito!",
@@ -97,13 +93,12 @@ const Registrar = () => {
             type: "success",
             text: "Usuario creado correctamente, por favor inicia sesión.",
             allowOutsideClick: false,
-            confirmButtonColor: "#4D8E17"
+            confirmButtonColor: "#4D8E17",
           }).then((response) => {
             if (response.isConfirmed) {
               toLogin();
             }
           });
-
         } else if (res.status === 200) {
           if (data.code === 0) {
             if (data.message === "USER_ALREADY_EXISTS") {
@@ -114,28 +109,79 @@ const Registrar = () => {
                 type: "error",
                 text: "Ya existe una cuenta con el usuario ingresado",
                 allowOutsideClick: false,
-                confirmButtonColor: "#DC3545"
+                confirmButtonColor: "#DC3545",
               }).then((response) => {
                 if (response.isConfirmed) {
-                  setErrorMessage("Ya existe una cuenta con el usuario ingresado.");
+                  setErrorMessage(
+                    "Ya existe una cuenta con el usuario ingresado."
+                  );
                 }
               });
-
             }
           }
         }
-
-
       })
       .catch((error) => {
         setLoading(false);
         console.error("error", error);
-      })
+      });
+  };
+
+  const handleChangeAvatar = (ev) => {
+    console.log("Avatar: ", ev.target);
+    console.log("images json: ", images);
+    setAvSelected(ev.target.value);
+  }
+
+  const handleChange = (event) => {
+    setFormulario({...formulario, [event.target.name]: event.target.value});
+    console.log(event.target.name+ ": ", event.target.value);
+  }
+
+  const avatar = (name) => {
+
+    let avatar = "";
+
+    switch (name) {
+      case "woman01":
+        if( "1" === avSelected) avatar = images.women.woman01.feliz.path;
+        else avatar = images.women.woman01.normal.path;
+        break;
+      case "woman02":
+        if( "3" === avSelected) avatar = images.women.woman02.feliz.path;
+        else avatar = images.women.woman02.normal.path;
+        break;
+      case "woman03":
+        if( "5" === avSelected) avatar = images.women.woman03.feliz.path;
+        else avatar = images.women.woman03.normal.path;
+        break;
+      case "man01":
+        if( "7" === avSelected) avatar = images.men.man01.feliz.path;
+        else avatar = images.men.man01.normal.path;
+        break;
+      case "man02":
+        if( "9" === avSelected) avatar = images.men.man02.feliz.path;
+        else avatar = images.men.man02.normal.path;
+        break;
+      case "man03":
+        if( "11" === avSelected) avatar = images.men.man03.feliz.path;
+        else avatar = images.men.man03.normal.path;
+        break;      
+      default:
+        break;
+    }
+
+    return(
+      <img src={avatar} width="127px" height="auto" />
+    );
   }
 
   return (
     <>
-      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
         <CircularProgress color="inherit" />
       </Backdrop>
 
@@ -148,7 +194,8 @@ const Registrar = () => {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              mt: 8, pb: 6,
+              mt: 8,
+              pb: 6,
             }}
           >
             <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
@@ -166,13 +213,19 @@ const Registrar = () => {
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
                   <TextField
-                    autoComplete="given-name"
                     name="Nombres"
                     required
                     fullWidth
                     id="Nombres"
                     label="Nombres"
                     autoFocus
+                    value={formulario.Nombres}
+                    onChange={(e) => {
+                      const re = /^[A-Za-zÁÉÍÓÚáéíóúñÑ ]+$/;
+                      if (e.target.value === '' || re.test(e.target.value)) {
+                        handleChange(e);
+                      }
+                    }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -182,7 +235,14 @@ const Registrar = () => {
                     id="Apellidos"
                     label="Apellidos"
                     name="Apellidos"
-                    autoComplete="family-name"
+                    value={formulario.Apellidos}
+                    onChange={(e) => {
+                      const re = /^[A-Za-zÁÉÍÓÚáéíóúñÑ ]+$/;
+                      if (e.target.value === '' || re.test(e.target.value)) {
+                        handleChange(e);
+                      }
+                    }}
+                    
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -190,14 +250,22 @@ const Registrar = () => {
                     <DatePicker
                       label="Fecha de Nacimiento"
                       value={fechaNacimiento}
-                      minDate={dayjs('01-01-1980')}
+                      minDate={dayjs("01-01-1980")}
                       maxDate={dayjs(new Date())}
                       inputFormat="DD-MM-YYYY"
                       mask="__-__-____"
                       onChange={(newValue) => {
                         setFechaNacimiento(newValue);
                       }}
-                      renderInput={(params) => <TextField {...params} helperText="dd-mm-yyyy" fullWidth id="FechaNacimiento" name="FechaNacimiento" />}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          helperText="dd-mm-yyyy"
+                          fullWidth
+                          id="FechaNacimiento"
+                          name="FechaNacimiento"
+                        />
+                      )}
                     />
                   </LocalizationProvider>
                 </Grid>
@@ -208,7 +276,18 @@ const Registrar = () => {
                     id="CorreoElectronico"
                     label="Correo Electronico"
                     name="CorreoElectronico"
-                    autoComplete="email"
+                    value={formulario.CorreoElectronico}
+                    onChange={(e) => {
+                      handleChange(e);
+                    }}
+                    // onBlur={(e) => {
+                    //   const re = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
+                    //   if (e.target.value === '' || re.test(e.target.value)) {
+                    //     console.log("email true");
+                    //   }else{
+                    //     console.log("email false");
+                    //   }
+                    // }}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -218,7 +297,8 @@ const Registrar = () => {
                     id="Usuario"
                     label="Usuario"
                     name="Usuario"
-                    autoComplete="email"
+                    value={formulario.Usuario}
+                    onChange={handleChange}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -229,8 +309,52 @@ const Registrar = () => {
                     label="Password"
                     type="password"
                     id="Password"
-                    autoComplete="new-password"
+                    value={formulario.Password}
+                    onChange={handleChange}
                   />
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography fullWidth variant="h6" component="div" align="left" gutterBottom >Selecciona tu avatar:</Typography>
+                  <Typography fullWidth variant="body2" component="div" align="left" gutterBottom >Al seleccionarlo el avatar cambiará de estado.</Typography>
+                  <RadioGroup
+                    row
+                    aria-labelledby="demo-row-radio-buttons-group-label"
+                    name="Avatar"
+                    id="Avatar"     
+                    onChange={handleChangeAvatar}     
+                    value={avSelected}          
+                  >
+                    <FormControlLabel value="7" control={<Radio required={true} style={{display: "none"}} />} label={avatar("man01")} />
+                    <FormControlLabel value="9" control={<Radio required={true} style={{display: "none"}} />} label={avatar("man02")} />
+                    <FormControlLabel value="11" control={<Radio required={true} style={{display: "none"}} />} label={avatar("man03")} />
+                    <FormControlLabel value="1" control={<Radio required={true} style={{display: "none"}} />} label={avatar("woman01")} />
+                    <FormControlLabel value="3" control={<Radio required={true} style={{display: "none"}} />} label={avatar("woman02")} />
+                    <FormControlLabel value="5" control={<Radio required={true} style={{display: "none"}} />} label={avatar("woman03")} />
+                  </RadioGroup>
+                  {/* <FormControlLabel
+                    control={
+                      <Checkbox
+                        defaultChecked
+                        // onChange={this.handleChange("")}
+                        value={false}
+                        key={2}
+                        style={{display: "none"}}
+                      />
+                    }
+                    label={
+                      <>
+                        <img
+                          src={"./img/dashboard.png"}
+                          key={1}
+                          className="profile-img"
+                          width="200px"
+                          height="auto"
+                          style={{ marginRight: "5px" }}
+                        />
+                        My text
+                      </>
+                    }
+                  /> */}
                 </Grid>
 
                 {/* <Grid item xs={12} sm={6}>
@@ -278,7 +402,14 @@ const Registrar = () => {
                 </Grid>
                 {errorMessage !== "" && (
                   <Grid item md={12}>
-                    <Typography variant="caption" align="center" color="error.main" paragraph>{errorMessage}</Typography>
+                    <Typography
+                      variant="caption"
+                      align="center"
+                      color="error.main"
+                      paragraph
+                    >
+                      {errorMessage}
+                    </Typography>
                   </Grid>
                 )}
               </Grid>

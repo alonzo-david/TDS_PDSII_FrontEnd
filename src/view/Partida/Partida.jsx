@@ -196,10 +196,10 @@ const Partida = (props) => {
     } else {
       Swal.fire({
         icon: "success",
-        title: "¡Éxito!",
+        title: "¡Felicidades!",
         footer: "",
         type: "success",
-        text: "¡Felicidades!, has terminado la partida, presiona continuar para inicar una nueva partida o finalizar para ir a la pantalla principal.",
+        text: "Has terminado la partida, presiona continuar para inicar una nueva partida o finalizar para ir a la pantalla principal.",
         allowOutsideClick: false,
         showDenyButton: true,
         confirmButtonText: "Continuar",
