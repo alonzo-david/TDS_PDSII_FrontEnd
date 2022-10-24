@@ -63,6 +63,7 @@ const Login = (props) => {
             localStorage.setItem("isLogin", true);
             localStorage.setItem("userName", data.NombreCompleto);
             localStorage.setItem("userId", data.Id);
+            localStorage.setItem("avatar", data.Avatar);
             setErrorMessage("");
             loggedIn(true);
             HomePage();
@@ -108,7 +109,7 @@ const Login = (props) => {
             sm={4}
             md={7}
             sx={{
-              backgroundImage: "url(https://source.unsplash.com/random)",
+              backgroundImage: "url(./img/login.png)",//"url(https://source.unsplash.com/random)",
               backgroundRepeat: "no-repeat",
               backgroundColor: (t) =>
                 t.palette.mode === "light"
@@ -132,7 +133,7 @@ const Login = (props) => {
                 <LockOutlinedIcon />
               </Avatar>
               <Typography component="h1" variant="h5">
-                Bienvenido a TriviaGuatemala
+                ¡Bienvenido!
               </Typography>
 
               <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
