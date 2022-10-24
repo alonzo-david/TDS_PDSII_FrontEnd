@@ -102,6 +102,11 @@ const Header = (props) => {
     
   }
 
+  const handleHome = () => {
+    setOpenMenuBar(false);
+    history.push("/");
+  }
+
   const ProfilePage = () => {
     //history.push("/Perfil");
   };
@@ -134,7 +139,7 @@ const Header = (props) => {
         >
           {isLogin ? (
             <>
-              <ListItem button>
+              <ListItem button onClick={handleHome}>
                 <ListItemText primary={"Inicio"} />
               </ListItem>
               <ListItem button onClick={handleProfile}>
@@ -205,9 +210,9 @@ const Header = (props) => {
               </Box>
 
 
-              {!isLogin && (
+              {/* {!isLogin && (
                 <LinkButton to="/Login">Iniciar Sesión</LinkButton>
-              )}
+              )} */}
             </Toolbar>
           </AppBar>
         </ThemeProvider>
