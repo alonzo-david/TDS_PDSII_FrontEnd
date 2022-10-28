@@ -76,11 +76,27 @@ const Registrar = () => {
       IdAvatar: data.get("Avatar")    
     };
 
-    console.log("Data Body: ", body);
+    if(data.get("Avatar") == null){
+      setLoading(false);
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        footer: "",
+        type: "error",
+        text: "¡No has seleccionado un avatar!",
+        allowOutsideClick: false,
+        confirmButtonColor: "#DC3545",
+      }).then((response) => {
+        if (response.isConfirmed) {
+          setErrorMessage(
+            "¡No has seleccionado un avatar!"
+          );
+        }
+      });
+    }else{
 
     Api.Post("/auth/register", body, "")
       .then((res) => {
-        console.log("Res: ", res);
         setLoading(false);
         const data = res.data;
 
@@ -125,18 +141,16 @@ const Registrar = () => {
         setLoading(false);
         console.error("error", error);
       });
+    }
   };
 
   const handleChangeAvatar = (ev) => {
-    console.log("Avatar: ", ev.target);
-    console.log("images json: ", images);
     setAvSelected(ev.target.value);
-  }
+  };
 
   const handleChange = (event) => {
     setFormulario({...formulario, [event.target.name]: event.target.value});
-    console.log(event.target.name+ ": ", event.target.value);
-  }
+  };
 
   const avatar = (name) => {
 
@@ -174,7 +188,7 @@ const Registrar = () => {
     return(
       <img src={avatar} width="127px" height="auto" />
     );
-  }
+  };
 
   return (
     <>
@@ -202,7 +216,7 @@ const Registrar = () => {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Sign up
+              Registrarme
             </Typography>
             <Box
               component="form"
@@ -241,8 +255,7 @@ const Registrar = () => {
                       if (e.target.value === '' || re.test(e.target.value)) {
                         handleChange(e);
                       }
-                    }}
-                    
+                    }}                    
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -250,7 +263,7 @@ const Registrar = () => {
                     <DatePicker
                       label="Fecha de Nacimiento"
                       value={fechaNacimiento}
-                      minDate={dayjs("01-01-1980")}
+                      minDate={dayjs("01-01-1922")}
                       maxDate={dayjs(new Date())}
                       inputFormat="DD-MM-YYYY"
                       mask="__-__-____"
@@ -276,18 +289,11 @@ const Registrar = () => {
                     id="CorreoElectronico"
                     label="Correo Electronico"
                     name="CorreoElectronico"
+                    type="email"
                     value={formulario.CorreoElectronico}
                     onChange={(e) => {
                       handleChange(e);
-                    }}
-                    // onBlur={(e) => {
-                    //   const re = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
-                    //   if (e.target.value === '' || re.test(e.target.value)) {
-                    //     console.log("email true");
-                    //   }else{
-                    //     console.log("email false");
-                    //   }
-                    // }}
+                    }}                    
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -324,12 +330,12 @@ const Registrar = () => {
                     onChange={handleChangeAvatar}     
                     value={avSelected}          
                   >
-                    <FormControlLabel value="7" control={<Radio required={true} style={{display: "none"}} />} label={avatar("man01")} />
-                    <FormControlLabel value="9" control={<Radio required={true} style={{display: "none"}} />} label={avatar("man02")} />
-                    <FormControlLabel value="11" control={<Radio required={true} style={{display: "none"}} />} label={avatar("man03")} />
-                    <FormControlLabel value="1" control={<Radio required={true} style={{display: "none"}} />} label={avatar("woman01")} />
-                    <FormControlLabel value="3" control={<Radio required={true} style={{display: "none"}} />} label={avatar("woman02")} />
-                    <FormControlLabel value="5" control={<Radio required={true} style={{display: "none"}} />} label={avatar("woman03")} />
+                    <FormControlLabel value="7" control={<Radio  style={{display: "none"}} />} label={avatar("man01")} />
+                    <FormControlLabel value="9" control={<Radio  style={{display: "none"}} />} label={avatar("man02")} />
+                    <FormControlLabel value="11" control={<Radio  style={{display: "none"}} />} label={avatar("man03")} />
+                    <FormControlLabel value="1" control={<Radio  style={{display: "none"}} />} label={avatar("woman01")} />
+                    <FormControlLabel value="3" control={<Radio  style={{display: "none"}} />} label={avatar("woman02")} />
+                    <FormControlLabel value="5" control={<Radio  style={{display: "none"}} />} label={avatar("woman03")} />
                   </RadioGroup>
                   {/* <FormControlLabel
                     control={

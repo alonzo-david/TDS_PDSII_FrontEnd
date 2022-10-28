@@ -53,11 +53,13 @@ const Partida = (props) => {
     // setNoPregunta(props.questionNo);
     // setActiveStep(props.questionNo - 1);
     // getPreguntas(props.questionNo);
-    debugger;
+
     const userid = CheckSession("userId");
     getRestaurarPartida(userid);
+    getEstadoAvatar(userid);
     //getRestaurarPartida();
   }, []);
+
 
   useEffect(() => {
     console.log("Partida No. Pregunta: ", noPregunta);
@@ -73,6 +75,19 @@ const Partida = (props) => {
         console.error("error", ex);
       });
   };
+
+  const getEstadoAvatar = (idUser) => {
+    Api.Get("/usuario/estado-avatar/" + idUser)
+      .then((res) => {
+        if(res.status === 200) {
+          const data = (res.data[0])[0];        
+          localStorage.setItem("avatar", data.Avatar);
+        }
+      })
+      .catch((ex) => {
+        console.error("error", ex);
+      });
+  }
 
   const getPreguntas = (_noPregunta) => {
     ApiPregunta.Get("/preguntas.php?grupo=6&nivel=" + _noPregunta)
@@ -94,13 +109,9 @@ const Partida = (props) => {
 
     Api.Get("/partida/restaurar-partida/" + idUser)
       .then((res) => {
-        // console.log("Result Auth: ", res.data.json());
-        debugger;
         if (res.status === 200) {
           const data = (res.data[0])[0];
-          console.log("restaurar nivel", data.Nivel);
-          console.log("restaurar puntaje", data.Puntaje);
-          debugger;
+
           setNoPregunta(data.Nivel);
           setActiveStep(data.Nivel - 1);
           getPreguntas(data.Nivel);

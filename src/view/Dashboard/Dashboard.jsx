@@ -41,14 +41,14 @@ const Dashboard = (props) => {
         <Box
           sx={{
             bgcolor: "background.paper",
-            pt: 8,
-            pb: 6,
+            pt: 20,
+            pb: 25,
           }}
         >
-          <Container maxWidth="sm">
-            <Grid container spacing={10}>
+          <Container maxWidth="md">
+            <Grid container spacing={30}>
               <Grid item xs={12} sm={6}>
-                <Card sx={{ maxWidth: 345, height: 225 }}>
+                <Card sx={{ maxWidth: 300, height: 225 }}>
                   <CardMedia
                     component="img"
                     height="225"
@@ -60,7 +60,7 @@ const Dashboard = (props) => {
               </Grid>
 
               <Grid item xs={12} sm={6}>
-                <Card sx={{ maxWidth: 450 }}
+                <Card sx={{ maxWidth: 300 }}
                   onClick={partidaPage}
                 >
                   <CardActionArea sx={{ height: 225 }}>

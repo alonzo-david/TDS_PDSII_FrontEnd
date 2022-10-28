@@ -14,7 +14,6 @@ const Home = (props) => {
   const history = useHistory();
 
   useEffect(() => {
-    debugger;
     let value = CheckSession("isLogin");
     value = JSON.parse(value);
     setIsLogin(value);
