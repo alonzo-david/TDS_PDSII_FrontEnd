@@ -137,11 +137,11 @@ const Header = (props) => {
             setOpenMenuBar(!openMenuBar);
           }}
         >
+          <ListItem button onClick={handleHome}>
+            <ListItemText primary={"Inicio"} />
+          </ListItem>
           {isLogin ? (
-            <>
-              <ListItem button onClick={handleHome}>
-                <ListItemText primary={"Inicio"} />
-              </ListItem>
+            <>              
               <ListItem button onClick={handleProfile}>
                 <ListItemText primary={"Mi Perfil"} />
               </ListItem>
