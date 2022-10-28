@@ -13,6 +13,8 @@ import {
   Backdrop,
   CircularProgress,
   Switch,
+  Radio,
+  RadioGroup,
 } from "@mui/material";
 import Moment from "moment/moment";
 import Swal from "sweetalert2";
@@ -23,16 +25,21 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Api } from "../../services/Api";
+import { images } from "../../services/Avatars";
 import * as AuthService from "../../services/AuthService";
 
 const theme = createTheme();
 
 const Perfil = () => {
-    const [nombres, setNombres] = useState("");
-    const [apellidos, setApellidos] = useState("");
-    const [fechaNacimiento, setFechaNacimiento] = useState(null);
-    const [correoElectronico, setCorreoElectronico] = useState("");
-
+  const [form, setForm] = useState({
+    Id: "",
+    Nombres: "",
+    Apellidos: "",
+    FechaNacimiento: "",
+    CorreoElectronico: "",
+    IdAvatar: "",
+    Avatar: ""
+  });
   const [loading, setLoading] = useState(false);
   const history = useHistory();
 
@@ -41,15 +48,16 @@ const Perfil = () => {
     getProfile(userId);
   }, []);
 
+  // useEffect(() => {
+  //   console.log("Form State: ", form);
+  // },[form])
+
   const getProfile = (userId) => {
     Api.Get("/persona/" + userId, "")
       .then((res) => {
         const data = (res.data[0])[0];
         if (res.status === 200) {
-            setNombres(data.Nombres);
-            setApellidos(data.Apellidos);
-            setFechaNacimiento(data.FechaNacimiento);
-            setCorreoElectronico(data.CorreoElectronico);
+            setForm(data);
         }
       })
       .catch((ex) => {
@@ -75,27 +83,84 @@ const Perfil = () => {
       Apellidos: data.get("Apellidos"),
       FechaNacimiento: dateFormatted, //moment(Date()).format("YYYY-MM-DD"),
       CorreoElectronico: data.get("CorreoElectronico"),
-      Usuario: data.get("Usuario"),
-      Password: data.get("Password"),
-      RecibirNotificacion: data.get("RecibirNotificacion") === "on" ? 1 : 0,
-      ReproducirMusica: data.get("ReproducirMusica") === "on" ? 1 : 0,
+      IdAvatar: data.get("Avatar"),
     };
 
-    console.log("Data Body: ", body);
-
-    Api.Post("/auth/register", body, "")
+    Api.Put("/Usuario/" + form.Id, body, "")
       .then((res) => {
-        console.log("Res: ", res);
-        setLoading(false);
-        const data = res.data;
-
+        setLoading(false);        
+        
         if (res.status === 200) {
+          const data = (res.data[0])[0];
+
+          Swal.fire({
+            icon: "success",
+            title: "¡Éxito!",
+            footer: "",
+            text: "Perfil actualizado correctamente.",
+            allowOutsideClick: false,
+            confirmButtonColor: "#4D8E17",
+          }).then((response) => {
+            if (response.isConfirmed) {
+              localStorage.setItem("avatar", data.Avatar);
+
+              const userId = AuthService.userId();
+              getProfile(userId);
+            }
+          });          
         }
       })
       .catch((error) => {
         setLoading(false);
         console.error("error", error);
       });
+  };
+
+  const handleChangeAvatar = (event) => {
+    setForm({...form, "IdAvatar": event.target.value});
+  };
+
+  const handleChange = (event) => {
+    setForm({...form, [event.target.name]: event.target.value});
+  };
+
+  const avatar = (name) => {
+
+    let avatar = "";
+    const avSelected = form.IdAvatar;
+
+    switch (name) {
+      case "woman01":
+        if( "1" == avSelected) avatar = images.women.woman01.feliz.path;
+        else avatar = images.women.woman01.normal.path;
+        break;
+      case "woman02":
+        if( "3" == avSelected) avatar = images.women.woman02.feliz.path;
+        else avatar = images.women.woman02.normal.path;
+        break;
+      case "woman03":
+        if( "5" == avSelected) avatar = images.women.woman03.feliz.path;
+        else avatar = images.women.woman03.normal.path;
+        break;
+      case "man01":
+        if( "7" == avSelected) avatar = images.men.man01.feliz.path;
+        else avatar = images.men.man01.normal.path;
+        break;
+      case "man02":
+        if( "9" == avSelected) avatar = images.men.man02.feliz.path;
+        else avatar = images.men.man02.normal.path;
+        break;
+      case "man03":
+        if( "11" == avSelected) avatar = images.men.man03.feliz.path;
+        else avatar = images.men.man03.normal.path;
+        break;      
+      default:
+        break;
+    }
+
+    return(
+      <img src={avatar} width="127px" height="auto" />
+    );
   };
 
   return (
@@ -120,12 +185,15 @@ const Perfil = () => {
               pb: 6,
             }}
           >
-            <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-              <LockOutlinedIcon />
-            </Avatar>
             <Typography component="h1" variant="h5">
-              Perfil
+              Mi Perfil
             </Typography>
+            <img
+              src={form.Avatar}
+              alt={form.IdAvatar}
+              loading="lazy"
+              height={175}
+            />            
             <Box
               component="form"
               // noValidate
@@ -142,7 +210,13 @@ const Perfil = () => {
                     id="Nombres"
                     label="Nombres"
                     autoFocus
-                    value={nombres}
+                    value={form.Nombres}
+                    onChange={(e) => {
+                      const re = /^[A-Za-zÁÉÍÓÚáéíóúñÑ ]+$/;
+                      if (e.target.value === '' || re.test(e.target.value)) {
+                        handleChange(e);
+                      }
+                    }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -152,20 +226,29 @@ const Perfil = () => {
                     id="Apellidos"
                     label="Apellidos"
                     name="Apellidos"
-                    value={apellidos}
+                    value={form.Apellidos}
+                    onChange={(e) => {
+                      const re = /^[A-Za-zÁÉÍÓÚáéíóúñÑ ]+$/;
+                      if (e.target.value === '' || re.test(e.target.value)) {
+                        handleChange(e);
+                      }
+                    }}
                   />
                 </Grid>
                 <Grid item xs={12}>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                       label="Fecha de Nacimiento"
-                      value={fechaNacimiento}
+                      value={form.FechaNacimiento}
                       minDate={dayjs("01-01-1980")}
                       maxDate={dayjs(new Date())}
                       inputFormat="DD-MM-YYYY"
                       mask="__-__-____"
                       onChange={(newValue) => {
-                        setFechaNacimiento(newValue);
+
+
+                        //setFechaNacimiento(newValue);
+                        setForm({...form, "FechaNacimiento": newValue});
                       }}
                       renderInput={(params) => (
                         <TextField
@@ -187,32 +270,33 @@ const Perfil = () => {
                     label="Correo Electronico"
                     name="CorreoElectronico"
                     autoComplete="email"
-                    value={correoElectronico}
+                    type="email"
+                    value={form.CorreoElectronico}
+                    onChange={(e) => {
+                      handleChange(e);
+                    }}      
                   />
                 </Grid>
-                {/* <Grid item xs={12}>
-                  <TextField
-                    required
-                    fullWidth
-                    id="Usuario"
-                    label="Usuario"
-                    name="Usuario"
-                    autoComplete="usuario"
-                    value={usuario}
-                  />
-                </Grid> */}
-                {/* <Grid item xs={12}>
-                  <TextField
-                    required
-                    fullWidth
-                    name="Password"
-                    label="Password"
-                    type="password"
-                    id="Password"
-                    autoComplete="password"
-                    value={}
-                  />
-                </Grid> */}
+
+                <Grid item xs={12}>
+                  <Typography fullWidth variant="h6" component="div" align="left" gutterBottom >Selecciona tu avatar:</Typography>
+                  <Typography fullWidth variant="body2" component="div" align="left" gutterBottom >Al seleccionarlo el avatar cambiará de estado.</Typography>
+                  <RadioGroup
+                    row
+                    aria-labelledby="demo-row-radio-buttons-group-label"
+                    name="Avatar"
+                    id="Avatar"     
+                    onChange={handleChangeAvatar}     
+                    value={form.IdAvatar}          
+                  >
+                    <FormControlLabel value="7" control={<Radio  style={{display: "none"}} />} label={avatar("man01")} />
+                    <FormControlLabel value="9" control={<Radio  style={{display: "none"}} />} label={avatar("man02")} />
+                    <FormControlLabel value="11" control={<Radio  style={{display: "none"}} />} label={avatar("man03")} />
+                    <FormControlLabel value="1" control={<Radio  style={{display: "none"}} />} label={avatar("woman01")} />
+                    <FormControlLabel value="3" control={<Radio  style={{display: "none"}} />} label={avatar("woman02")} />
+                    <FormControlLabel value="5" control={<Radio  style={{display: "none"}} />} label={avatar("woman03")} />
+                  </RadioGroup>                 
+                </Grid>
               </Grid>
               <Button
                 type="submit"
