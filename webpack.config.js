@@ -44,13 +44,15 @@ module.exports = {
         use: ["style-loader", "css-loader"],
       },
       {
-        test: /\.(png|jpe?g|gif)$/i,
-        use: [
-          {
-            loader: "file-loader",
-          },
-        ],
-      },
+        test: /\.(png|jpg|gif)$/i,
+        use: {
+          loader: "url-loader",
+          options: {
+            limit: 8192,
+            name: "public/img/[name].[hash:8].[ext]"
+          }
+        }
+       },
       {
         test: /\.(woff|woff2|eot|ttf|svg|otf)$/,
         loader: "file-loader",
@@ -68,14 +70,14 @@ module.exports = {
       title: 'Caching',
     }),
   ],
-  node: {
-    module: "empty",
-    dgram: "empty",
-    dns: "mock",
-    fs: "empty",
-    http2: "empty",
-    net: "empty",
-    tls: "empty",
-    child_process: "empty",
-  },
+  // node: {
+  //   module: "empty",
+  //   dgram: "empty",
+  //   dns: "mock",
+  //   fs: "empty",
+  //   http2: "empty",
+  //   net: "empty",
+  //   tls: "empty",
+  //   child_process: "empty",
+  // },
 };
