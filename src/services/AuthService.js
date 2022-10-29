@@ -1,4 +1,4 @@
-import { CheckSession } from "./Sessions";
+import { CheckSession, ClearSession } from "./Sessions";
 
 export const isLoggedIn = () => {
   const result = CheckSession("isLogin");
@@ -18,4 +18,17 @@ export const userName = () => {
 export const avatar = () => {
   const result = CheckSession("avatar");
   return result;
+};
+
+export const kindaUser = () => {
+  const result = CheckSession("kindaUser");
+  return Number(result);
+};
+
+export const logOut = () => {
+  ClearSession("isLogin");
+  ClearSession("userName");
+  ClearSession("userId");
+  ClearSession("avatar");
+  ClearSession("kindaUser");
 };

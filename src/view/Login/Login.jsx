@@ -44,13 +44,9 @@ const Login = (props) => {
       Password: data.get('password'),
     };
 
-    console.log("Data: ", body);
-
     Api.Post("/auth/login", body, "")
       .then((res) => {
-        console.log("Res Login: ", res);
         if (res.status === 200) {
-          console.log("Login data: ", res.data)
           const data = res.data; //(res.data[0])[0];
 
           if (data.code === 0) {
@@ -64,6 +60,7 @@ const Login = (props) => {
             localStorage.setItem("userName", data.NombreCompleto);
             localStorage.setItem("userId", data.Id);
             localStorage.setItem("avatar", data.Avatar);
+            localStorage.setItem("kindaUser", data.IdTipoUsuario);
             setErrorMessage("");
             loggedIn(true);
             HomePage();
@@ -109,7 +106,7 @@ const Login = (props) => {
             sm={4}
             md={7}
             sx={{
-              backgroundImage: "url(./img/login.png)",//"url(https://source.unsplash.com/random)",
+              backgroundImage: "url(http://18.117.103.213:3002/img/login.png)",//"url(https://source.unsplash.com/random)",
               backgroundRepeat: "no-repeat",
               backgroundColor: (t) =>
                 t.palette.mode === "light"

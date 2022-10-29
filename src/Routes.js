@@ -6,7 +6,7 @@ import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import PublicRoute from "./components/PublicRoute/PublicRoute";
 
 const Routes = (props) => {
-  const { HOME, PUBLIC, PRIVATE, NOT_FOUND } = VIEWS;
+  const { HOME, PUBLIC, PRIVATE, ADMIN, USER, NOT_FOUND } = VIEWS;
 
   return (
     <Switch>
@@ -35,7 +35,7 @@ const Routes = (props) => {
         );
       })}
 
-      {PRIVATE.map((route) => {
+      {/* {PRIVATE.map((route) => {
         return (
           <PrivateRoute
             key={route.path}
@@ -47,6 +47,41 @@ const Routes = (props) => {
             currentScore={props.currentScore}
             restartScore={props.restartScore}
             questionNo={props.questionNo}
+            routes={route}
+          />
+        );
+      })} */}
+      {ADMIN.map((route) => {
+        return (
+          <PrivateRoute
+            key={route.path}
+            path={route.path}
+            exact={true}
+            
+            loggedIn={props.loggedIn}
+            currentLevel={props.currentLevel}
+            currentScore={props.currentScore}
+            restartScore={props.restartScore}
+            questionNo={props.questionNo}
+            kindaUser={1}
+            routes={route}
+          />
+        );
+      })}
+
+      {USER.map((route) => {
+        return (
+          <PrivateRoute
+            key={route.path}
+            path={route.path}
+            exact={true}
+            
+            loggedIn={props.loggedIn}
+            currentLevel={props.currentLevel}
+            currentScore={props.currentScore}
+            restartScore={props.restartScore}
+            questionNo={props.questionNo}
+            kindaUser={2}
             routes={route}
           />
         );

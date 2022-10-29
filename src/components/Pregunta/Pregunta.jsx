@@ -28,17 +28,13 @@ const Pregunta = ({noPregunta, parentCallback}) => {
   const [numeroPregunta, setNumeroPregunta] = useState(noPregunta);
 
   useEffect(() => {
-    console.log("C Pregunta: ", noPregunta);
-
     getPreguntas(noPregunta);
   }, []);
 
   const getPreguntas = (_noPregunta) => {
     ApiPregunta.Get("/preguntas.php?grupo=6&nivel=" + _noPregunta)
       .then((res) => {
-        // console.log("Result Auth: ", res.data.json());
         const result = Object.values(res.data);
-        console.log("Result Auth: ", result);
         setPreguntas(result);
       })
       .catch((ex) => {
@@ -48,7 +44,6 @@ const Pregunta = ({noPregunta, parentCallback}) => {
 
   const handleClickAswer = (e, _isCorrect) => {
     e.stopPropagation();
-    console.log("CORRECT ANSWER: ", _isCorrect);
     parentCallback(false, _isCorrect);
   }
 

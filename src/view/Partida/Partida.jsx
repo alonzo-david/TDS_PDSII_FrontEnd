@@ -48,33 +48,15 @@ const Partida = (props) => {
   const history = useHistory();
 
   useEffect(() => {
-    console.log("useEffect Partida");
-
-    // setNoPregunta(props.questionNo);
-    // setActiveStep(props.questionNo - 1);
-    // getPreguntas(props.questionNo);
-
     const userid = CheckSession("userId");
     getRestaurarPartida(userid);
     getEstadoAvatar(userid);
-    //getRestaurarPartida();
   }, []);
 
 
   useEffect(() => {
-    console.log("Partida No. Pregunta: ", noPregunta);
     getPreguntas(noPregunta);
   }, [noPregunta]);
-
-  const getTipoUsuarios = () => {
-    Api.Get("/tipousuario")
-      .then((res) => {
-        console.log("Result Auth: ", res);
-      })
-      .catch((ex) => {
-        console.error("error", ex);
-      });
-  };
 
   const getEstadoAvatar = (idUser) => {
     Api.Get("/usuario/estado-avatar/" + idUser)
@@ -92,9 +74,7 @@ const Partida = (props) => {
   const getPreguntas = (_noPregunta) => {
     ApiPregunta.Get("/preguntas.php?grupo=6&nivel=" + _noPregunta)
       .then((res) => {
-        // console.log("Result Auth: ", res.data.json());
         const result = Object.values(res.data);
-        console.log("Result Auth: ", result);
         setPreguntas(result);
       })
       .catch((ex) => {
@@ -158,7 +138,6 @@ const Partida = (props) => {
 
     const selected = preguntas[_cardSelected];
     setPreguntaSeleccionada(selected);
-    //console.log("preguntasss ", preguntass);
 
     setIsCorrect(isCorrect);
     setCardSelected(_cardSelected);

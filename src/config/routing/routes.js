@@ -49,6 +49,38 @@ const PRIVATE_ROUTES = [
   },
 ];
 
+/*
+ * ADMIN ROUTES
+ */
+const ADMIN_ROUTES = [
+  {
+    component: views.DashboardAdmin,
+    path: "/DashboardAdmin",
+  },
+  {
+    component: views.Perfil,
+    path: "/PerfilAdmin",
+  },
+];
+
+/*
+ * USER ROUTES
+ */
+const USER_ROUTES = [
+  {
+    component: views.Dashboard,
+    path: "/Dashboard",
+  },
+  {
+    component: views.Partida,
+    path: "/Partida",
+  },
+  {
+    component: views.Perfil,
+    path: "/Perfil",
+  },
+];
+
 const NOT_FOUND_ROUTE = {
   component: views.NotFound,
 };
@@ -60,6 +92,8 @@ const ROUTES = {
   HOME: HOME_ROUTE,
   PUBLIC: PUBLIC_ROUTES,
   PRIVATE: PRIVATE_ROUTES,
+  ADMIN: ADMIN_ROUTES,
+  USER: USER_ROUTES,
   NOT_FOUND: NOT_FOUND_ROUTE,
 };
 

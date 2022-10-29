@@ -6,6 +6,7 @@ import Dashboard from "./Dashboard/Dashboard";
 import Welcome from "./Welcome/Welcome";
 import Perfil from "./Perfil/Perfil";
 import NotFound from "./NotFound/NotFound";
+import DashboardAdmin from "./Admin/Dashboard/DashboardAdmin"
 
 export default {
   Home,
@@ -15,5 +16,6 @@ export default {
   Dashboard,
   Welcome,
   Perfil,
+  DashboardAdmin,
   NotFound,
 };

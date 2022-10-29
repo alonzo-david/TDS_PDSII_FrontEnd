@@ -5,12 +5,13 @@ import { Redirect, Route } from "react-router-dom";
 const PrivateRoute = ({ routes, ...rest }) => {
   // Add your own authentication on the below line.
   const isLoggedIn = AuthService.isLoggedIn();
-
+  const kindaUser = AuthService.kindaUser();
+  
   return (
     <Route
       {...rest}
       render={(props) => {
-        return isLoggedIn ? (
+        return isLoggedIn && kindaUser === rest.kindaUser ? (
           //   <Component {...props} />
           <routes.component {...props} loggedIn={rest.loggedIn} 
             currentLevel={rest.currentLevel} 

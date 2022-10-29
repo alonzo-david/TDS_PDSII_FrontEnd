@@ -5,17 +5,12 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import MenuItem from "@mui/material/MenuItem";
-import Menu from "@mui/material/Menu";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { Backdrop, Badge, CircularProgress, CssBaseline, Drawer, ListItem, ListItemText } from "@mui/material";
-import LinkButton from "../LinkButton/LinkButton";
+import { Backdrop, CircularProgress, CssBaseline, Drawer, ListItem, ListItemText } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import CastleIcon from '@mui/icons-material/Castle';
 import StarIcon from '@mui/icons-material/Star';
-import { CheckSession, ClearSession } from "../../services/Sessions";
-import { Api } from "../../services/Api";
+import * as AuthService from "../../services/AuthService";
 
 const Header = (props) => {
   const [isLogin, setIsLogin] = useState(props.loggedIn);
@@ -24,24 +19,24 @@ const Header = (props) => {
 
   const [userName, setUserName] = useState("");
   const [userId, setUserId] = useState(0);
-
   const [loading, setLoading] = useState(false);
+  const [kindaUser, setKindaUser] = useState(0);
 
   const history = useHistory();
 
   useEffect(() => {
-    const value = CheckSession("isLogin");
-    setIsLogin(JSON.parse(value));
-    const username = CheckSession("userName");
-    setUserName(username);
-    const userid = CheckSession("userId");
-    setUserId(userid);
+    const _isLogin = AuthService.isLoggedIn();
+    setIsLogin(_isLogin);
+    const _userName = AuthService.userName();
+    setUserName(_userName);
+    const _userId = AuthService.userId();
+    setUserId(_userId);
+    const _kindaUser = AuthService.kindaUser();
+    setKindaUser(_kindaUser);
 
-    //getRestaurarPartida(userid);
   }, [])
 
   const handleOpenMenuBar = (event) => {
-    console.log("CLICK OPEN MENU BAR");
     setOpenMenuBar(!openMenuBar);
   };
 
@@ -79,9 +74,7 @@ const Header = (props) => {
     // setProgressPoints(0);
     setOpenMenuBar(false);
 
-    ClearSession("isLogin");
-    ClearSession("userName");
-    ClearSession("userId");
+    AuthService.logOut();
 
     setLoading(true);
     history.push("/");
@@ -96,7 +89,10 @@ const Header = (props) => {
       setOpenMenuBar(false);
       setLoading(false);
       clearInterval(interval);
-      history.push("/Perfil");
+      if(kindaUser === 1)
+        history.push("/PerfilAdmin");
+      else
+        history.push("/Perfil");  
     }, 300);
 
     
@@ -141,16 +137,29 @@ const Header = (props) => {
             <ListItemText primary={"Inicio"} />
           </ListItem>
           {isLogin ? (
-            <>              
+            <>            
               <ListItem button onClick={handleProfile}>
                 <ListItemText primary={"Mi Perfil"} />
               </ListItem>
-              <ListItem button>
-                <ListItemText primary={"Amigos"} />
-              </ListItem>
-              <ListItem button>
-                <ListItemText primary={"Buscar amigos"} />
-              </ListItem>
+
+              {
+                kindaUser === 1 ? (
+                  <>                  
+                    <ListItem button>
+                      <ListItemText primary={"Configuraciones"} />
+                    </ListItem>
+                  </>
+                ) : (
+                  <>
+                    <ListItem button>
+                      <ListItemText primary={"Amigos"} />
+                    </ListItem>
+                    <ListItem button>
+                      <ListItemText primary={"Buscar amigos"} />
+                    </ListItem>
+                  </>
+                )
+              }
               <ListItem button onClick={handleLogOut}>
                 <ListItemText primary={"Salir"} />
               </ListItem>
@@ -194,7 +203,7 @@ const Header = (props) => {
               <Box sx={{ flexGrow: 1 }} />
               <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
 
-                {isLogin && (
+                {isLogin && kindaUser === 2 && (
                   <>
                     <IconButton size="small" aria-label="show 4 new mails" color="inherit">
                       <StarIcon style={headerButtons} />
