@@ -1,12 +1,11 @@
 import React from "react";
 import VIEWS from "./config/routing/routes";
 import { Switch, Route } from "react-router-dom";
-import Home from "./view/Home/Home";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import PublicRoute from "./components/PublicRoute/PublicRoute";
 
 const Routes = (props) => {
-  const { HOME, PUBLIC, PRIVATE, ADMIN, USER, NOT_FOUND } = VIEWS;
+  const { HOME, PUBLIC, ADMIN, USER, NOT_FOUND } = VIEWS;
 
   return (
     <Switch>

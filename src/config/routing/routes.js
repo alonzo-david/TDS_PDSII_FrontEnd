@@ -61,6 +61,10 @@ const ADMIN_ROUTES = [
     component: views.Perfil,
     path: "/PerfilAdmin",
   },
+  {
+    component: views.ConfigApi,
+    path: "/ConfigApi",
+  },
 ];
 
 /*
