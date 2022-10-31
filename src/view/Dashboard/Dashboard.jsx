@@ -13,9 +13,6 @@ import {
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import * as AuthService from "../../services/AuthService";
-import { images } from "../../services/Avatars";
-
-const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 const theme = createTheme();
 

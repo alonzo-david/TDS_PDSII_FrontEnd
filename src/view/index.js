@@ -6,7 +6,8 @@ import Dashboard from "./Dashboard/Dashboard";
 import Welcome from "./Welcome/Welcome";
 import Perfil from "./Perfil/Perfil";
 import NotFound from "./NotFound/NotFound";
-import DashboardAdmin from "./Admin/Dashboard/DashboardAdmin"
+import DashboardAdmin from "./Admin/Dashboard/DashboardAdmin";
+import ConfigApi from "./Admin/ConfigApi/ConfigApi";
 
 export default {
   Home,
@@ -17,5 +18,6 @@ export default {
   Welcome,
   Perfil,
   DashboardAdmin,
+  ConfigApi,
   NotFound,
 };

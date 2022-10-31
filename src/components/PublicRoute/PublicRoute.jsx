@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import * as AuthService from "../../services/AuthService";
 import { Redirect, Route } from "react-router-dom";
 

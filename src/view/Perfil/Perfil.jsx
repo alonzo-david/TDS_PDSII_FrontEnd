@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Link, withRouter, useHistory } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import {
-  Avatar,
   Button,
   CssBaseline,
   TextField,
@@ -12,13 +11,11 @@ import {
   Container,
   Backdrop,
   CircularProgress,
-  Switch,
   Radio,
   RadioGroup,
 } from "@mui/material";
 import Moment from "moment/moment";
 import Swal from "sweetalert2";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -41,7 +38,6 @@ const Perfil = () => {
     Avatar: ""
   });
   const [loading, setLoading] = useState(false);
-  const history = useHistory();
 
   useEffect(() => {
     const userId = AuthService.userId();
@@ -159,7 +155,7 @@ const Perfil = () => {
     }
 
     return(
-      <img src={avatar} width="127px" height="auto" />
+      <img src={avatar} alt={avatar} width="127px" height="auto" />
     );
   };
 

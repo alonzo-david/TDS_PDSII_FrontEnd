@@ -12,8 +12,6 @@ import {
   Container,
   Backdrop,
   CircularProgress,
-  Switch,
-  Checkbox,
   RadioGroup,
   Radio,
 } from "@mui/material";
@@ -186,7 +184,7 @@ const Registrar = () => {
     }
 
     return(
-      <img src={avatar} width="127px" height="auto" />
+      <img src={avatar} alt={avatar} width="127px" height="auto" />
     );
   };
 

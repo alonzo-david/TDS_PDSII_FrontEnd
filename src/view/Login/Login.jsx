@@ -18,8 +18,6 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import "./Login.css";
 
 const Login = (props) => {
-  const [, setData] = useState([]);
-  const [, setDataUsuario] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const history = useHistory();
