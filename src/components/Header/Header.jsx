@@ -14,11 +14,11 @@ import * as AuthService from "../../services/AuthService";
 
 const Header = (props) => {
   const [isLogin, setIsLogin] = useState(props.loggedIn);
-  const [menuLogin, setMenuLogin] = useState(null);
+  const [, setMenuLogin] = useState(null);
   const [openMenuBar, setOpenMenuBar] = useState(false);
 
   const [userName, setUserName] = useState("");
-  const [userId, setUserId] = useState(0);
+  const [, setUserId] = useState(0);
   const [loading, setLoading] = useState(false);
   const [kindaUser, setKindaUser] = useState(0);
 
@@ -40,17 +40,17 @@ const Header = (props) => {
     setOpenMenuBar(!openMenuBar);
   };
 
-  const handleChange = (event) => {
-    setIsLogin(event.target.checked);
-  };
+  // const handleChange = (event) => {
+  //   setIsLogin(event.target.checked);
+  // };
 
-  const handleMenu = (event) => {
-    setMenuLogin(event.currentTarget);
-  };
+  // const handleMenu = (event) => {
+  //   setMenuLogin(event.currentTarget);
+  // };
 
-  const handleClose = () => {
-    setMenuLogin(null);
-  };
+  // const handleClose = () => {
+  //   setMenuLogin(null);
+  // };
 
   const InitPage = () => {
     history.push("/");
@@ -103,6 +103,12 @@ const Header = (props) => {
     history.push("/");
   }
 
+  const handleConfigApi = () => {
+    setOpenMenuBar(true);
+    setOpenMenuBar(false);
+    history.push("/ConfigApi");
+  }
+
   const ProfilePage = () => {
     //history.push("/Perfil");
   };
@@ -143,19 +149,10 @@ const Header = (props) => {
               </ListItem>
 
               {
-                kindaUser === 1 ? (
+                kindaUser === 1 && (
                   <>                  
-                    <ListItem button>
-                      <ListItemText primary={"Configuraciones"} />
-                    </ListItem>
-                  </>
-                ) : (
-                  <>
-                    <ListItem button>
-                      <ListItemText primary={"Amigos"} />
-                    </ListItem>
-                    <ListItem button>
-                      <ListItemText primary={"Buscar amigos"} />
+                    <ListItem button onClick={handleConfigApi}>
+                      <ListItemText primary={"Configuración"} />
                     </ListItem>
                   </>
                 )
