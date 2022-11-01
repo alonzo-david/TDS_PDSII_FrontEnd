@@ -80,6 +80,7 @@ const Login = (props) => {
             localStorage.setItem("avatar", data.Avatar);
             localStorage.setItem("kindaUser", data.IdTipoUsuario);
             localStorage.setItem("usarCache", data.UsarCache);
+            localStorage.setItem("apiPreguntas", data.Link);
             setErrorMessage("");
             loggedIn(true);
             HomePage();

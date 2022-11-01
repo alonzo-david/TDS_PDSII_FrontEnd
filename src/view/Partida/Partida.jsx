@@ -72,7 +72,9 @@ const Partida = (props) => {
   }
 
   const getPreguntas = (_noPregunta) => {
-    ApiPregunta.Get("/preguntas.php?grupo=6&nivel=" + _noPregunta)
+    const _apiPreguntas = CheckSession("apiPreguntas");
+
+    ApiPregunta.Get(_apiPreguntas + _noPregunta)
       .then((res) => {
         const result = Object.values(res.data);
         setPreguntas(result);

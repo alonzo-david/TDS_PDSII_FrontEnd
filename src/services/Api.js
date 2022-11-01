@@ -61,7 +61,7 @@ const Api = {
 
 const ApiPregunta = {
   Get: async (endpoint) => {
-    const response = await axios.get(URL_API_PREGUNTA + endpoint, {
+    const response = await axios.get(endpoint, {
       
     });
     return response;
