@@ -99,9 +99,11 @@ const Perfil = () => {
           }).then((response) => {
             if (response.isConfirmed) {
               localStorage.setItem("avatar", data.Avatar);
+              localStorage.setItem("userName", data.NombreCompleto);
 
               const userId = AuthService.userId();
               getProfile(userId);
+              window.location.reload();
             }
           });          
         }
