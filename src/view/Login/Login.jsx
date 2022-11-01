@@ -16,13 +16,33 @@ import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import "./Login.css";
+import Swal from "sweetalert2";
 
 const Login = (props) => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const history = useHistory();
 
-  useEffect(() => { }, []);
+  useEffect(() => {
+    if(errorMessage !== ""){
+      console.log(errorMessage);
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        footer: "",
+        type: "error",
+        text: `${errorMessage}`,
+        allowOutsideClick: false,
+        confirmButtonColor: "#DC3545",
+      }).then((response) => {
+        if (response.isConfirmed) {
+          setErrorMessage(
+            ""
+          );
+        }
+      });
+    }
+   }, [errorMessage]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -59,6 +79,7 @@ const Login = (props) => {
             localStorage.setItem("userId", data.Id);
             localStorage.setItem("avatar", data.Avatar);
             localStorage.setItem("kindaUser", data.IdTipoUsuario);
+            localStorage.setItem("usarCache", data.UsarCache);
             setErrorMessage("");
             loggedIn(true);
             HomePage();
